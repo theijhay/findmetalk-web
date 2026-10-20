@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. The only place colours, radii and motion are defined;
+ * components use the utilities these generate (bg-page, text-ink, ...), never
+ * a raw value.
+ *
+ * These are neutral placeholders until the design system lands (spec 9: calm,
+ * warm, human; dark by night, light by day). Keep every colour a plain hex so
+ * postcss-color-mix-fallback.mjs can give iOS 15 a translucent fallback.
+ */
+@theme {
+  --color-page: #f7f6f3;
+  --color-surface: #ffffff;
+  --color-ink: #1d1d1f;
+  --color-ink-secondary: #5f5f66;
+  --color-line: #e3e1dc;
+  --color-accent: #3b5bdb;
+  --color-on-accent: #ffffff;
+
+  --radius-control: 0.75rem;
+  /* Spec 9.6: every interactive target is at least 44 by 44 px. */
+  --spacing-target: 2.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-page: #0f1115;
+    --color-surface: #171a21;
+    --color-ink: #eceef2;
+    --color-ink-secondary: #a3a8b4;
+    --color-line: #2a2f3a;
+    --color-accent: #8ea2ff;
+    --color-on-accent: #0f1115;
+  }
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Spec 9.1, 9.3: nothing moves for people who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

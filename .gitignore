@@ -1,0 +1,25 @@
+# Product spec and planning notes stay on the owner's machine. This repository
+# is public: nothing like this is ever committed, and CI fails if it is.
+findmetalk-docs/
+*_SPEC.md
+
+# Dependencies and build output
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
