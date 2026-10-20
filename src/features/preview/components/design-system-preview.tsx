@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import * as React from "react";
 
 import { useAppearance } from "@/components/providers";
+import { AppShell } from "@/components/layout/app-shell";
 import {
   Avatar,
   Banner,
@@ -30,6 +31,7 @@ import {
   PREVIEW_STATUS_LIST,
 } from "@/components/ui/fixtures";
 import { SITE } from "@/config/site";
+import type { ShellBannerState, ShellSurface } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 function stretch(text: string, enabled: boolean): string {
@@ -45,11 +47,14 @@ export function DesignSystemPreview() {
   const tInterests = useTranslations("interests");
   const tIntents = useTranslations("intents");
   const tStatus = useTranslations("statusPresets");
+  const tShell = useTranslations("shell");
 
   const { preference, theme, sky, localHour, setPreference, setSimulatedHour } =
     useAppearance();
 
   const [longCopy, setLongCopy] = React.useState(false);
+  const [shellSurface, setShellSurface] = React.useState<ShellSurface>("cloud");
+  const [shellBanner, setShellBanner] = React.useState<ShellBannerState>("normal");
   const [openSwitch, setOpenSwitch] = React.useState(true);
   const [closedSwitch, setClosedSwitch] = React.useState(false);
   const [nameValue, setNameValue] = React.useState("Tolu");
@@ -183,6 +188,155 @@ export function DesignSystemPreview() {
             />
           </div>
         </Card>
+      </section>
+
+      {/* App Shell, Navigation & Always-Reachable "I need help" Control (Spec 7.7, 9.5, CR-5) */}
+      <section aria-labelledby="preview-appshell-heading" className="flex flex-col gap-4">
+        <div>
+          <h2 id="preview-appshell-heading" className="text-lg font-semibold text-ink">
+            {t("appShell.heading")}
+          </h2>
+          <p className="mt-1 text-sm text-ink-secondary">{t("appShell.description")}</p>
+        </div>
+
+        <Card className="flex flex-col gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-ink">{t("appShell.surfaceLabel")}</span>
+              <div className="flex flex-wrap gap-2">
+                {(["cloud", "recents", "settings", "call", "circle"] as const).map((surf) => (
+                  <Chip
+                    key={surf}
+                    selected={shellSurface === surf}
+                    onClick={() => setShellSurface(surf)}
+                  >
+                    {surf === "call"
+                      ? tShell("surfaceCall")
+                      : surf === "circle"
+                        ? tShell("surfaceCircle")
+                        : tShell(`nav.${surf}`)}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-ink">{t("appShell.bannerLabel")}</span>
+              <div className="flex flex-wrap gap-2">
+                <Chip
+                  selected={shellBanner === "normal"}
+                  onClick={() => setShellBanner("normal")}
+                >
+                  {t("appShell.bannerNormal")}
+                </Chip>
+                <Chip
+                  selected={shellBanner === "offline"}
+                  onClick={() => setShellBanner("offline")}
+                >
+                  {t("appShell.bannerOffline")}
+                </Chip>
+                <Chip
+                  selected={shellBanner === "reconnecting"}
+                  onClick={() => setShellBanner("reconnecting")}
+                >
+                  {t("appShell.bannerReconnecting")}
+                </Chip>
+                <Chip
+                  selected={shellBanner === "error"}
+                  onClick={() => setShellBanner("error")}
+                >
+                  {t("appShell.bannerError")}
+                </Chip>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <AppShell
+          inlinePreview
+          surface={shellSurface}
+          bannerState={shellBanner}
+          onSelectTab={(tab) => setShellSurface(tab)}
+          onRetry={() => setShellBanner("normal")}
+        >
+          <Card className="mx-auto flex w-full max-w-lg flex-col items-center gap-4 text-center">
+            {shellSurface === "cloud" ? (
+              <>
+                <h3 className="text-xl font-semibold text-ink break-words">
+                  {stretch(t("appShell.cloudHeading"), longCopy)}
+                </h3>
+                <p className="text-sm text-ink-secondary break-words">
+                  {stretch(t("appShell.cloudBody"), longCopy)}
+                </p>
+                <Button variant="primary">
+                  {stretch(t("appShell.cloudPrimaryAction"), longCopy)}
+                </Button>
+              </>
+            ) : null}
+            {shellSurface === "recents" ? (
+              <>
+                <h3 className="text-xl font-semibold text-ink break-words">
+                  {stretch(t("appShell.recentsHeading"), longCopy)}
+                </h3>
+                <p className="text-sm text-ink-secondary break-words">
+                  {stretch(t("appShell.recentsBody"), longCopy)}
+                </p>
+                <Button variant="primary" onClick={() => setShellSurface("cloud")}>
+                  {stretch(t("appShell.recentsPrimaryAction"), longCopy)}
+                </Button>
+              </>
+            ) : null}
+            {shellSurface === "settings" ? (
+              <>
+                <h3 className="text-xl font-semibold text-ink break-words">
+                  {stretch(t("appShell.settingsHeading"), longCopy)}
+                </h3>
+                <p className="text-sm text-ink-secondary break-words">
+                  {stretch(t("appShell.settingsBody"), longCopy)}
+                </p>
+                <Button variant="primary">
+                  {stretch(t("appShell.settingsPrimaryAction"), longCopy)}
+                </Button>
+              </>
+            ) : null}
+            {shellSurface === "call" ? (
+              <>
+                <h3 className="text-xl font-semibold text-ink break-words">
+                  {stretch(t("appShell.callHeading"), longCopy)}
+                </h3>
+                <p className="text-sm text-ink-secondary break-words">
+                  {stretch(t("appShell.callBody"), longCopy)}
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2.5">
+                  <Button variant="secondary">{t("appShell.callMute")}</Button>
+                  <Button variant="danger" onClick={() => setShellSurface("cloud")}>
+                    {stretch(t("appShell.callPrimaryAction"), longCopy)}
+                  </Button>
+                  <Button variant="secondary">{t("appShell.callBlock")}</Button>
+                  <Button variant="quiet">{t("appShell.callReport")}</Button>
+                </div>
+              </>
+            ) : null}
+            {shellSurface === "circle" ? (
+              <>
+                <h3 className="text-xl font-semibold text-ink break-words">
+                  {stretch(t("appShell.circleHeading"), longCopy)}
+                </h3>
+                <p className="text-sm text-ink-secondary break-words">
+                  {stretch(t("appShell.circleBody"), longCopy)}
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2.5">
+                  <Button variant="secondary">{t("appShell.callMute")}</Button>
+                  <Button variant="danger" onClick={() => setShellSurface("cloud")}>
+                    {stretch(t("appShell.circlePrimaryAction"), longCopy)}
+                  </Button>
+                  <Button variant="secondary">{t("appShell.callBlock")}</Button>
+                  <Button variant="quiet">{t("appShell.callReport")}</Button>
+                </div>
+              </>
+            ) : null}
+          </Card>
+        </AppShell>
       </section>
 
       {/* Ambient Time-of-Day Palettes */}

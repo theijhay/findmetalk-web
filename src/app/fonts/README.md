@@ -3,7 +3,7 @@
 - **File:** `NotoSans-Variable.woff2`
 - **Size:** `68,628` bytes
 - **SHA-256:** `0aaad2682589cad9f21b1e9e100262efab372ac8a4f69d83f9d743768c1973c0`
-- **Family:** Noto Sans (variable weight `100` to `900`, normal width `100%`)
+- **Family:** Noto Sans (variable weight `400` to `700`, normal width `100%`)
 - **Upstream project:** https://github.com/notofonts/latin-greek-cyrillic (`NotoSans` v2.015, served by Google Fonts `notosans/v42`)
 - **License:** SIL Open Font License 1.1 (`./OFL.txt`)
 

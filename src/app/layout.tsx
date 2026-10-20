@@ -13,7 +13,7 @@ import "./globals.css";
 const appSans = localFont({
   src: "./fonts/NotoSans-Variable.woff2",
   variable: "--font-app-sans",
-  weight: "100 900",
+  weight: "400 700",
   style: "normal",
   display: "swap",
 });

@@ -135,8 +135,8 @@ fails, do not push. Never weaken a gate to get green: no `@ts-ignore`,
 - No bots, fake users or fake numbers, ever.
 - "Open to talk" is off by default; the user turns it on.
 - No hotline numbers in code. Copy touching crisis, health, recording consent
-  or legal topics is marked `NEEDS REVIEW` in a comment beside the string key
-  and left for the owner.
+  or legal topics is listed in `messages/needs-review.json` with its
+  requirement ID and left for the owner.
 - Photos appear only on the profile card and incoming-call screen, never on
   orbs.
 

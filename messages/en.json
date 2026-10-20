@@ -60,6 +60,32 @@
     "study_break": "Study break",
     "custom": "Up late revising, say hi"
   },
+  "shell": {
+    "skipToContent": "Skip to main content",
+    "primaryNavLabel": "Main navigation",
+    "helpControl": "I need help",
+    "surfaceCall": "In a call",
+    "surfaceCircle": "In a Circle",
+    "nav": {
+      "cloud": "Cloud",
+      "recents": "Recents",
+      "settings": "Settings"
+    },
+    "banners": {
+      "offlineTitle": "You are offline",
+      "offlineBody": "{appName} needs a connection to find someone to talk to.",
+      "reconnectingTitle": "Reconnecting...",
+      "reconnectingBody": "Holding your place for up to {seconds} seconds while your network recovers.",
+      "errorTitle": "Something went wrong",
+      "errorBody": "We could not reach {appName} right now. Please try again."
+    },
+    "helpSheet": {
+      "title": "Need support right now?",
+      "companionNotice": "{appName} is a place for companionship and conversation, not a crisis or medical service.",
+      "emergencyFallback": "If you are in immediate danger, contact your local emergency services.",
+      "backToCloud": "Back to the cloud"
+    }
+  },
   "preview": {
     "title": "{appName} design system preview",
     "subtitle": "Calm, warm, human tokens, typography and shared UI primitives across time-of-day palettes and component states.",
@@ -185,6 +211,34 @@
       "sheetDescription": "Speaks English and Yorùbá · Happy to listen",
       "sheetBody": "Select Call to send an invitation. If Tolu is unavailable, you will return calmly to the cloud.",
       "openSheetButton": "Open bottom Sheet"
+    },
+    "appShell": {
+      "heading": "App shell, navigation and always-reachable \"I need help\" control (Spec 7.7, 9.5, CR-5)",
+      "description": "Mobile-first frame with safe-area insets, navigation between Cloud, Recents and Settings, global connection banners, and one-tap reachability to \"I need help\" from every screen including calls and circles.",
+      "surfaceLabel": "Active screen surface",
+      "bannerLabel": "Global connection state",
+      "bannerNormal": "Normal (connected)",
+      "bannerOffline": "Offline banner",
+      "bannerReconnecting": "Reconnecting banner",
+      "bannerError": "Generic error with Try again",
+      "cloudHeading": "42 people are open right now",
+      "cloudBody": "Browse the living sky or tap Find someone for a quick voice match.",
+      "cloudPrimaryAction": "Find someone",
+      "recentsHeading": "People you spoke with recently",
+      "recentsBody": "You can call someone from Recents whenever their Open to talk switch is on.",
+      "recentsPrimaryAction": "Return to the cloud",
+      "settingsHeading": "Your preferences and privacy",
+      "settingsBody": "Control your spoken languages, audio devices and privacy options.",
+      "settingsPrimaryAction": "Save changes",
+      "callHeading": "In a voice call with Tolu",
+      "callBody": "End, Mute, Block, Report and \"I need help\" stay on screen for the whole call.",
+      "callPrimaryAction": "End call",
+      "callMute": "Mute",
+      "callBlock": "Block",
+      "callReport": "Report",
+      "circleHeading": "Late-night study circle (4 of 8)",
+      "circleBody": "Leave, Mute, Block, Report and \"I need help\" stay on screen for every member.",
+      "circlePrimaryAction": "Leave circle"
     }
   }
 }
