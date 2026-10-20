@@ -143,8 +143,16 @@ test("CR-2, CR-5: sensitive copy is listed in messages/needs-review.json and con
     );
   }
 
-  // Every key under shell.helpSheet.* (and later help.*, consent.*, legal.*) must be in needs-review.json
-  const sensitivePrefixes = ["shell.helpSheet.", "help.", "consent.", "legal."];
+  // Every key under shell.helpSheet.* (and later help.*, consent.*, legal.*, home.legal.*) must be in needs-review.json
+  const sensitivePrefixes = [
+    "shell.helpSheet.",
+    "home.legal.",
+    "home.crisisDisclaimer",
+    "home.entityNote",
+    "help.",
+    "consent.",
+    "legal.",
+  ];
   for (const [key, val] of leafKeys.entries()) {
     if (sensitivePrefixes.some((prefix) => key.startsWith(prefix))) {
       assert.ok(

@@ -3,8 +3,35 @@
     "description": "A calm place to talk to someone, by voice, right now."
   },
   "home": {
+    "eyebrow": "18+ only · Voice only · No text chat",
     "title": "Someone to talk to, right now.",
-    "enter": "Enter the cloud"
+    "promise": "Enter a shared sky of open people and share a calm voice conversation in under a minute, with no friend requests, no followers and no text feeds.",
+    "enter": "Enter the cloud",
+    "pillarsLabel": "How it works",
+    "pillars": {
+      "voiceTitle": "Voice only",
+      "voiceBody": "Real human conversation with no text messages, DMs or public feeds.",
+      "inviteTitle": "Every call is an invitation",
+      "inviteBody": "You are reachable only while Open to talk is on, and you can accept or skip silently.",
+      "safetyTitle": "One-tap exit and safety",
+      "safetyBody": "End, Leave, Block, Report and \"I need help\" stay within reach at every moment."
+    },
+    "crisisDisclaimer": "{appName} is a place for companionship and conversation, not a crisis or medical service. If you are in immediate danger, contact your local emergency services.",
+    "entityNote": "Operated by Olystique Ltd. For adults 18 and older.",
+    "legalNavLabel": "Rules and policies",
+    "links": {
+      "rules": "Community rules",
+      "privacy": "Privacy policy",
+      "terms": "Terms of service"
+    },
+    "legal": {
+      "rulesTitle": "{appName} community rules",
+      "rulesBody": "You must be 18 or older. Treat every person with kindness and respect. Harassment, sexual content, hate speech, scams, impersonation, doxxing and contact with minors result in immediate removal.",
+      "privacyTitle": "{appName} privacy and recording notice",
+      "privacyBody": "Operated by Olystique Ltd. We collect the minimum data needed to run {appName}. Calls and Circles may be recorded server-side for safety moderation and are automatically deleted after the retention window unless attached to an active report or legal hold.",
+      "termsTitle": "{appName} terms of service",
+      "termsBody": "Operated by Olystique Ltd. {appName} provides voice companionship and conversation for adults aged 18 and over, and is not a medical, therapy or emergency service."
+    }
   },
   "offline": {
     "title": "You are offline",
@@ -239,6 +266,15 @@
       "circleHeading": "Late-night study circle (4 of 8)",
       "circleBody": "Leave, Mute, Block, Report and \"I need help\" stay on screen for every member.",
       "circlePrimaryAction": "Leave circle"
+    },
+    "landing": {
+      "heading": "Landing page (Spec 7.1, P7, CR-5)",
+      "description": "One-sentence promise, one primary button (\"Enter the cloud\"), companion positioning disclaimer, \"I need help\" reachability, and accessible links to rules, privacy and terms.",
+      "stateLabel": "Landing preview state",
+      "stateDefault": "Default landing view",
+      "stateRules": "Community rules modal",
+      "statePrivacy": "Privacy and recording modal",
+      "stateTerms": "Terms of service modal"
     }
   }
 }

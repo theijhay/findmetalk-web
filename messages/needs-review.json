@@ -2,6 +2,13 @@
   "shell.helpSheet.title": "CR-5",
   "shell.helpSheet.companionNotice": "CR-5",
   "shell.helpSheet.emergencyFallback": "CR-2",
-  "shell.helpSheet.backToCloud": "CR-5"
+  "shell.helpSheet.backToCloud": "CR-5",
+  "home.crisisDisclaimer": "CR-5",
+  "home.entityNote": "Spec 11.5",
+  "home.legal.rulesTitle": "SAFE-8",
+  "home.legal.rulesBody": "SAFE-8",
+  "home.legal.privacyTitle": "REC-2",
+  "home.legal.privacyBody": "REC-2",
+  "home.legal.termsTitle": "Spec 11.5",
+  "home.legal.termsBody": "Spec 11.5"
 }
-
