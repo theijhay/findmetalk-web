@@ -31,10 +31,34 @@ import {
   PREVIEW_STATUS_LIST,
 } from "@/components/ui/fixtures";
 import { SITE } from "@/config/site";
+import {
+  CloudScreen,
+  type CloudScreenDataState,
+} from "@/features/cloud/components/cloud-screen";
+import {
+  CLOUD_ENTRIES_FIXTURE,
+  CLOUD_PROFILE_CARDS_FIXTURE,
+  CLOUD_VIEWER_FIXTURE,
+  generateLargeCloudFixture,
+} from "@/features/cloud/fixtures";
 import { LandingScreen } from "@/features/onboarding/components/landing-screen";
 import type { LandingLegalDocId } from "@/features/onboarding/landing-meta";
+import type { CloudViewMode, PresenceStateValue } from "@/lib/cloud";
 import type { ShellBannerState, ShellSurface } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
+
+type CloudPreviewScenario =
+  | "sky_open"
+  | "sky_closed"
+  | "list_view"
+  | "profile_card"
+  | "status_picker"
+  | "stress_200"
+  | "empty"
+  | "loading"
+  | "error"
+  | "open_elsewhere"
+  | "quick_match_empty";
 
 function stretch(text: string, enabled: boolean): string {
   if (!enabled) return text;
@@ -56,7 +80,126 @@ export function DesignSystemPreview() {
 
   const [longCopy, setLongCopy] = React.useState(false);
   const [landingDoc, setLandingDoc] = React.useState<LandingLegalDocId | null>(null);
+  const [cloudScenario, setCloudScenario] =
+    React.useState<CloudPreviewScenario>("sky_open");
   const [shellSurface, setShellSurface] = React.useState<ShellSurface>("cloud");
+
+  const largeCloudEntries = React.useMemo(
+    () => generateLargeCloudFixture(200),
+    [],
+  );
+
+  const cloudScenarioConfig = React.useMemo((): {
+    entries: typeof CLOUD_ENTRIES_FIXTURE;
+    presenceState: PresenceStateValue;
+    viewMode: CloudViewMode;
+    selectedUserId: string | null;
+    statusPickerOpen: boolean;
+    dataState: CloudScreenDataState;
+  } => {
+    switch (cloudScenario) {
+      case "sky_closed":
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "closed",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "ready",
+        };
+      case "list_view":
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "open",
+          viewMode: "list",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "ready",
+        };
+      case "profile_card":
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "open",
+          viewMode: "sky",
+          selectedUserId: "a1c8e3b2-9d4f-4c7a-8b1e-2f6d0a9c4e71",
+          statusPickerOpen: false,
+          dataState: "ready",
+        };
+      case "status_picker":
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "open",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: true,
+          dataState: "ready",
+        };
+      case "stress_200":
+        return {
+          entries: largeCloudEntries,
+          presenceState: "open",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "ready",
+        };
+      case "empty":
+        return {
+          entries: [],
+          presenceState: "closed",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "empty",
+        };
+      case "loading":
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "open",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "loading",
+        };
+      case "error":
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "open",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "error",
+        };
+      case "open_elsewhere":
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "closed",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "open_elsewhere",
+        };
+      case "quick_match_empty":
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "open",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "quick_match_empty",
+        };
+      case "sky_open":
+      default:
+        return {
+          entries: CLOUD_ENTRIES_FIXTURE,
+          presenceState: "open",
+          viewMode: "sky",
+          selectedUserId: null,
+          statusPickerOpen: false,
+          dataState: "ready",
+        };
+    }
+  }, [cloudScenario, largeCloudEntries]);
   const [shellBanner, setShellBanner] = React.useState<ShellBannerState>("normal");
   const [openSwitch, setOpenSwitch] = React.useState(true);
   const [closedSwitch, setClosedSwitch] = React.useState(false);
@@ -379,6 +522,63 @@ export function DesignSystemPreview() {
           onActiveDocChange={setLandingDoc}
           longCopy={longCopy}
           onEnter={() => setShellSurface("cloud")}
+        />
+      </section>
+
+      {/* The Cloud: Sky View, List View & Profile Card (Spec 9.2, 9.3, FR-CLOUD-3, FR-CLOUD-4, FR-CLOUD-7, FR-PROF-6) */}
+      <section
+        id="cloud-section"
+        aria-labelledby="preview-cloud-heading"
+        className="flex flex-col gap-4"
+      >
+        <div>
+          <h2 id="preview-cloud-heading" className="text-lg font-semibold text-ink">
+            {t("cloud.heading")}
+          </h2>
+          <p className="mt-1 text-sm text-ink-secondary">{t("cloud.description")}</p>
+        </div>
+
+        <Card className="flex flex-col gap-3">
+          <span className="text-sm font-medium text-ink">{t("cloud.scenarioLabel")}</span>
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                ["sky_open", "scenarioSkyOpen"],
+                ["sky_closed", "scenarioSkyClosed"],
+                ["list_view", "scenarioList"],
+                ["profile_card", "scenarioProfileCard"],
+                ["status_picker", "scenarioStatusPicker"],
+                ["stress_200", "scenario200Users"],
+                ["empty", "scenarioEmpty"],
+                ["loading", "scenarioLoading"],
+                ["error", "scenarioError"],
+                ["open_elsewhere", "scenarioOpenElsewhere"],
+                ["quick_match_empty", "scenarioQuickMatchEmpty"],
+              ] as const
+            ).map(([key, labelKey]) => (
+              <Chip
+                key={key}
+                selected={cloudScenario === key}
+                onClick={() => setCloudScenario(key)}
+              >
+                {t(`cloud.${labelKey}`)}
+              </Chip>
+            ))}
+          </div>
+        </Card>
+
+        <CloudScreen
+          key={cloudScenario}
+          embedded
+          entries={cloudScenarioConfig.entries}
+          profileCards={CLOUD_PROFILE_CARDS_FIXTURE}
+          viewer={CLOUD_VIEWER_FIXTURE}
+          initialPresenceState={cloudScenarioConfig.presenceState}
+          initialViewMode={cloudScenarioConfig.viewMode}
+          initialSelectedUserId={cloudScenarioConfig.selectedUserId}
+          initialStatusPickerOpen={cloudScenarioConfig.statusPickerOpen}
+          dataState={cloudScenarioConfig.dataState}
+          longCopy={longCopy}
         />
       </section>
 
