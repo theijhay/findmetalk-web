@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "description": "A calm place to talk to someone, by voice, right now."
+  },
+  "home": {
+    "title": "Someone to talk to, right now.",
+    "enter": "Enter the cloud"
+  },
+  "offline": {
+    "title": "You are offline",
+    "body": "{appName} needs a connection to find someone to talk to.",
+    "retry": "Try again"
+  },
+  "errors": {
+    "unauthorized": "Please sign in again.",
+    "forbidden": "You can't do that.",
+    "not_found": "We couldn't find that.",
+    "validation_failed": "Please check the highlighted fields.",
+    "too_many_requests": "Please wait a moment and try again.",
+    "internal_error": "Something went wrong on our side. Please try again.",
+    "upstream_unavailable": "We can't reach {appName} right now. Please try again.",
+    "upstream_timeout": "That took too long. Please try again.",
+    "unknown": "Something went wrong. Please try again."
+  }
+}

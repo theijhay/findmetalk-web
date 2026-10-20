@@ -1,0 +1,16 @@
+# Weekly pull requests for outdated dependencies and the CI actions, into the
+# integration branch. Next, React and the build target are never bumped
+# without `make ci` (browser floor, see AGENTS.md).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    target-branch: development
+    open-pull-requests-limit: 5
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    target-branch: development

@@ -1,0 +1,65 @@
+name: CI
+
+# The same gates as `make ci`: contract drift, types, lint, tests, a
+# production build, the iOS 15 bundle check, known-vulnerable dependencies
+# and secrets anywhere in history.
+#
+# Manual runs only for now; `make ci` runs these gates locally before every
+# push. To run on every pull request and push again, replace the trigger with:
+#   push:
+#     branches: [development, main]
+#   pull_request:
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  checks:
+    name: contract, types, lint, tests, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # The spec and planning notes are private and this repository is public.
+      - name: Private docs are not committed
+        run: |
+          if git ls-files | grep -iE '(^|/)findmetalk-docs/|_SPEC\.md$'; then
+            echo "::error::Private docs are tracked. Remove them with git rm --cached and keep them local."
+            exit 1
+          fi
+      - run: make contract typecheck lint test build bundle-check
+
+  dependencies:
+    name: dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - run: make audit
+
+  secrets:
+    name: secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - run: make secrets

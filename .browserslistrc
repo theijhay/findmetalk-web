@@ -1,0 +1,14 @@
+# The oldest browsers FindMeTalk is compiled for. Next.js defaults to Safari 16.4,
+# which no iPhone 7, 6s or first-generation SE can run: they stop at iOS 15.
+# Built for 16.4, the bundle carries syntax Safari 15 cannot parse (class
+# static blocks), so a page's JavaScript never starts and it sits on its
+# loading state forever.
+#
+# 15.4 rather than 15.0 because the stylesheet uses cascade layers (@layer),
+# which Safari has from 15.4, and every iPhone on iOS 15 can update to 15.8.
+# tests/browser-support.test.ts keeps this in place.
+chrome >= 111
+edge >= 111
+firefox >= 111
+safari >= 15.4
+ios_saf >= 15.4
