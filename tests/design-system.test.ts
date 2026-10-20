@@ -6,6 +6,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
+  APPEARANCE_BOOTSTRAP_SCRIPT,
   contrastRatio,
   getDefaultThemeForPeriod,
   getSkyPeriod,
@@ -210,4 +211,15 @@ test("Spec 9.6: self-hosted typeface contains every Yoruba, Hausa, Igbo and Fren
     (ch) => !font.hasGlyphForCodePoint(ch.codePointAt(0)!),
   );
   assert.deepEqual(missing, []);
+
+  // Font license and provenance must accompany the self-hosted font
+  const ofl = readFileSync(path.join(SRC, "app/fonts/OFL.txt"), "utf8");
+  const fontReadme = readFileSync(path.join(SRC, "app/fonts/README.md"), "utf8");
+  assert.ok(ofl.includes("SIL OPEN FONT LICENSE Version 1.1"));
+  assert.ok(fontReadme.includes("NotoSans-Variable.woff2"));
+
+  // Pre-paint bootstrap script sets data-theme and data-sky without optional chaining
+  assert.ok(APPEARANCE_BOOTSTRAP_SCRIPT.includes('setAttribute("data-theme"'));
+  assert.ok(APPEARANCE_BOOTSTRAP_SCRIPT.includes('setAttribute("data-sky"'));
+  assert.equal(APPEARANCE_BOOTSTRAP_SCRIPT.includes("?."), false);
 });

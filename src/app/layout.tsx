@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import { SITE } from "@/config/site";
 import { ServiceWorkerRegistration } from "@/features/pwa/components/service-worker-registration";
+import { APPEARANCE_BOOTSTRAP_SCRIPT } from "@/lib/theme";
 
 import "./globals.css";
 
@@ -40,7 +41,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
   return (
-    <html lang={locale} className={`${appSans.variable} h-full`}>
+    <html lang={locale} className={`${appSans.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: APPEARANCE_BOOTSTRAP_SCRIPT }} />
+      </head>
       <body className="min-h-full font-sans antialiased">
         <NextIntlClientProvider>
           <Providers>{children}</Providers>

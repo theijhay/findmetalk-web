@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as React from "react";
 
 import {
+  APPEARANCE_PREFERENCE_KEY,
   isThemePreference,
   resolveAppearance,
   type SkyPeriod,
@@ -11,7 +12,7 @@ import {
   type ThemePreference,
 } from "@/lib/theme";
 
-const PREFERENCE_KEY = "fmt_appearance_pref";
+const PREFERENCE_KEY = APPEARANCE_PREFERENCE_KEY;
 const PREFERENCE_EVENT = "fmt-appearance-change";
 
 export interface AppearanceContextValue {

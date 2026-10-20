@@ -14,6 +14,15 @@ export type ThemeMode = (typeof THEME_MODES)[number];
 export const THEME_PREFERENCES = ["auto", "light", "dark"] as const;
 export type ThemePreference = (typeof THEME_PREFERENCES)[number];
 
+export const APPEARANCE_PREFERENCE_KEY = "fmt_appearance_pref";
+
+/**
+ * Plain ES2017 inline script executed in <head> before first paint so night and
+ * dusk visitors never see a light flash before hydration.
+ */
+export const APPEARANCE_BOOTSTRAP_SCRIPT =
+  '(function(){try{var p="auto";try{var s=window.localStorage.getItem("fmt_appearance_pref");if(s==="auto"||s==="light"||s==="dark"){p=s;}}catch(e){}var h=new Date().getHours();var n=h>=5&&h<8?"dawn":h>=8&&h<17?"day":h>=17&&h<20?"dusk":"night";var t=n==="dawn"||n==="day"?"light":"dark";var k=n;if(p==="light"){t="light";k=n==="dawn"||n==="day"?n:"day";}else if(p==="dark"){t="dark";k=n==="dusk"||n==="night"?n:"night";}var r=document.documentElement;r.setAttribute("data-theme",t);r.setAttribute("data-sky",k);}catch(e){}})();';
+
 export const STATUS_PRESET_IDS = [
   "just_chat",
   "rough_day",
