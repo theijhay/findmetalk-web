@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 
 import { HelpControl } from "@/components/layout/help-control";
 import { Button, Card, Dialog } from "@/components/ui";
+import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import {
   LANDING_LEGAL_DOC_IDS,
@@ -13,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export interface LandingScreenProps {
+  readonly enterHref?: string;
   readonly onEnter?: () => void;
   readonly activeDoc?: LandingLegalDocId | null;
   readonly onActiveDocChange?: (doc: LandingLegalDocId | null) => void;
@@ -22,6 +25,7 @@ export interface LandingScreenProps {
 }
 
 export function LandingScreen({
+  enterHref = ROUTES.signIn,
   onEnter,
   activeDoc: controlledDoc,
   onActiveDocChange,
@@ -127,13 +131,22 @@ export function LandingScreen({
         </p>
 
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
-          <Button
-            variant="primary"
-            onClick={onEnter}
-            className="min-w-[13rem] px-6 py-3 text-base"
-          >
-            {expand(tHome("enter"))}
-          </Button>
+          {onEnter ? (
+            <Button
+              variant="primary"
+              onClick={onEnter}
+              className="min-w-[13rem] px-6 py-3 text-base"
+            >
+              {expand(tHome("enter"))}
+            </Button>
+          ) : (
+            <Link
+              href={enterHref}
+              className="inline-flex min-h-target min-w-[13rem] items-center justify-center gap-2 rounded-[var(--radius-control)] border border-transparent bg-accent px-6 py-3 text-center text-base font-semibold text-on-accent shadow-[var(--shadow-card)] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-calm)] hover:bg-accent-hover whitespace-normal break-words"
+            >
+              {expand(tHome("enter"))}
+            </Link>
+          )}
         </div>
 
         {/* Calm principles summary (P1, P3, P4) */}

@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { test } from "node:test";
 
+import { ROUTES } from "../src/config/routes.ts";
 import {
   LANDING_LEGAL_DOC_IDS,
   LANDING_LEGAL_DOCS,
@@ -26,7 +27,46 @@ test("Spec 7.1, P7: landing exposes links to rules, privacy and terms and three 
   assert.equal(isLandingLegalDocId("unknown"), false);
 });
 
-test("CR-5, Spec 11.5: landing copy names Olystique Ltd, is listed in messages/needs-review.json, and never links to /preview", () => {
+test("Spec 7.1: landing primary CTA ('Enter the cloud') links to ROUTES.signIn on the real page", () => {
+  assert.equal(ROUTES.signIn, "/sign-in");
+
+  const pageSource = fs.readFileSync(
+    path.join(ROOT, "src/app/page.tsx"),
+    "utf8",
+  );
+  const landingSource = fs.readFileSync(
+    path.join(ROOT, "src/features/onboarding/components/landing-screen.tsx"),
+    "utf8",
+  );
+
+  assert.match(
+    pageSource,
+    /enterHref=\{ROUTES\.signIn\}/,
+    "HomePage must pass ROUTES.signIn as enterHref to LandingScreen",
+  );
+  assert.match(
+    landingSource,
+    /enterHref\s*=\s*ROUTES\.signIn/,
+    "LandingScreen must default enterHref to ROUTES.signIn",
+  );
+  assert.match(
+    landingSource,
+    /<Link[\s\S]*href=\{enterHref\}/,
+    "LandingScreen must render the primary CTA as a Next.js Link to enterHref",
+  );
+  assert.doesNotMatch(
+    pageSource,
+    /\/preview\b/,
+    "Home page must never link to /preview in production navigation",
+  );
+  assert.doesNotMatch(
+    landingSource,
+    /\/preview\b/,
+    "LandingScreen must never link to /preview in production navigation",
+  );
+});
+
+test("CR-5, Spec 11.5: landing copy names Olystique Ltd and is listed in messages/needs-review.json", () => {
   const enMessages = JSON.parse(
     fs.readFileSync(path.join(ROOT, "messages/en.json"), "utf8"),
   ) as {
@@ -62,23 +102,4 @@ test("CR-5, Spec 11.5: landing copy names Olystique Ltd, is listed in messages/n
 
   // No hotline phone numbers hardcoded in landing copy
   assert.equal(/\d{3,}/.test(enMessages.home.crisisDisclaimer), false);
-
-  const pageSource = fs.readFileSync(
-    path.join(ROOT, "src/app/page.tsx"),
-    "utf8",
-  );
-  const landingSource = fs.readFileSync(
-    path.join(ROOT, "src/features/onboarding/components/landing-screen.tsx"),
-    "utf8",
-  );
-  assert.doesNotMatch(
-    pageSource,
-    /\/preview\b/,
-    "Home page must never link to /preview in production navigation",
-  );
-  assert.doesNotMatch(
-    landingSource,
-    /\/preview\b/,
-    "LandingScreen must never link to /preview in production navigation",
-  );
 });
