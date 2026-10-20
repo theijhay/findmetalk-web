@@ -335,6 +335,40 @@ body {
   outline-offset: 2px;
 }
 
+/* Spec 9.1, 9.2: gentle orb drift and own-orb pulse using transforms and opacity only. */
+@keyframes cloud-orb-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes own-orb-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale3d(1.04, 1.04, 1);
+  }
+}
+
+.cloud-orb-animated {
+  animation-name: cloud-orb-drift;
+  animation-timing-function: var(--ease-calm);
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.own-orb-glow {
+  animation: own-orb-pulse var(--duration-pulse) var(--ease-calm) infinite;
+}
+
 /* Spec 9.1, 9.3: nothing moves for people who asked for less motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -344,5 +378,10 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .cloud-orb-animated,
+  .own-orb-glow {
+    animation: none !important;
   }
 }

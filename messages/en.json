@@ -47,7 +47,22 @@
     "internal_error": "Something went wrong on our side. Please try again.",
     "upstream_unavailable": "We can't reach {appName} right now. Please try again.",
     "upstream_timeout": "That took too long. Please try again.",
-    "unknown": "Something went wrong. Please try again."
+    "unknown": "Something went wrong. Please try again.",
+    "consent": {
+      "required": "Please confirm the community rules and recording notice before opening to talk."
+    },
+    "profile": {
+      "not_created": "Please finish setting up your profile first."
+    },
+    "presence": {
+      "open_elsewhere": "You are already open on another device.",
+      "not_open": "Turn on Open to talk first."
+    },
+    "call": {
+      "caller_not_open": "Turn on Open to talk before starting a call.",
+      "no_one_available": "No one's available right now. Try again in a moment?",
+      "already_active": "You are already in a call or Circle."
+    }
   },
   "common": {
     "close": "Close",
@@ -71,7 +86,14 @@
     "books": "Books",
     "football": "Football",
     "study": "Study",
-    "late_night": "Late night"
+    "late_night": "Late night",
+    "movies": "Movies",
+    "tech": "Tech",
+    "cooking": "Cooking",
+    "travel": "Travel",
+    "art": "Art",
+    "languages": "Languages",
+    "campus_life": "Campus life"
   },
   "intents": {
     "want_to_talk": "Want to talk",
@@ -275,6 +297,101 @@
       "stateRules": "Community rules modal",
       "statePrivacy": "Privacy and recording modal",
       "stateTerms": "Terms of service modal"
+    },
+    "cloud": {
+      "heading": "The cloud: sky view, list view and profile card (Spec 9.2, 9.3, FR-CLOUD-3, FR-CLOUD-4, FR-CLOUD-7, FR-PROF-6)",
+      "description": "Living sky of softly drifting orbs, accessible list view, profile card sheet, own orb with Open to talk switch, filters and 200-person stress mode.",
+      "scenarioLabel": "Cloud preview scenario",
+      "scenarioSkyOpen": "Sky view (Open to talk ON)",
+      "scenarioSkyClosed": "Sky view (browsing while OFF)",
+      "scenarioList": "List view (reduced-motion default)",
+      "scenarioProfileCard": "Profile card with approved photo",
+      "scenarioStatusPicker": "Own orb status selector",
+      "scenario200Users": "200 open people (orb cap stress)",
+      "scenarioEmpty": "Empty cloud (0 open)",
+      "scenarioLoading": "Loading skeleton",
+      "scenarioError": "Feed error state",
+      "scenarioOpenElsewhere": "409 presence.open_elsewhere dialog",
+      "scenarioQuickMatchEmpty": "409 call.no_one_available notice"
+    }
+  },
+  "cloud": {
+    "populationZero": "No one is open right now",
+    "populationOne": "1 person is open right now",
+    "populationMany": "{count} people are open right now",
+    "browsingWhileOpen": "Your orb is glowing in the sky. Tap any orb or Find someone to start a voice call.",
+    "browsingWhileClosed": "You are browsing while Open to talk is off. Turn it on when you are ready to call or receive invitations.",
+    "viewToggleLabel": "Cloud view mode",
+    "skyViewTab": "Sky view",
+    "listViewTab": "List view",
+    "skyRegionLabel": "Living sky of people open to talk",
+    "listRegionLabel": "List of people open to talk",
+    "loadingSkyLabel": "Loading open people in the cloud",
+    "quickMatchHeading": "Prefer not to browse?",
+    "quickMatchHint": "We will match you with someone who shares your spoken language and interests.",
+    "findSomeoneButton": "Find someone",
+    "quickMatchEmptyTitle": "No one's available right now.",
+    "quickMatchEmptyBody": "Try again in a moment, or adjust your filters.",
+    "callDisabledClosed": "Turn on Open to talk first so you can call someone or use Find someone.",
+    "callDisabledBusy": "You are already in a conversation.",
+    "turnOnOpenToTalk": "Turn on Open to talk",
+    "emptyTitle": "No one's available right now.",
+    "emptyBody": "Try again in a moment, or turn on Open to talk so others can find you.",
+    "filteredEmptyTitle": "No one open matches those filters right now.",
+    "filteredEmptyBody": "Try clearing a filter to see everyone who is open.",
+    "errorTitle": "We could not load the cloud right now.",
+    "errorBody": "Check your connection and try again.",
+    "orbAriaLabel": "{name}, {status}. Speaks {languages}. Select to open profile card.",
+    "viewProfileButton": "View {name}'s card",
+    "paginationRange": "Showing {start} to {end} of {total} open people",
+    "paginationPrev": "Previous group",
+    "paginationNext": "Next group",
+    "countries": {
+      "NG": "Nigeria",
+      "GH": "Ghana",
+      "FR": "France",
+      "GB": "United Kingdom",
+      "US": "United States"
+    },
+    "filters": {
+      "heading": "Filter who you see",
+      "clearAll": "Clear filters",
+      "languageLabel": "Spoken language",
+      "allLanguages": "All languages",
+      "countryLabel": "Country (opted-in)",
+      "allCountries": "All countries",
+      "intentLabel": "Intent",
+      "allIntents": "Any intent",
+      "interestsLabel": "Interests"
+    },
+    "ownOrb": {
+      "avatarLabel": "{name} own orb, Open to talk {state}",
+      "stateOpen": "Your orb is visible in the sky",
+      "stateClosed": "Your orb is dimmed (off by default)",
+      "changeStatusAria": "Current status: {status}. Select to change status.",
+      "switchLabel": "Open to talk",
+      "switchOpenHint": "Anyone open can invite you to a voice call.",
+      "switchClosedHint": "Off by default. Turn on when you want to talk.",
+      "statusSheetTitle": "Choose your status",
+      "statusSheetDescription": "Pick a preset or write a short line up to 60 characters.",
+      "customStatusLabel": "Custom status",
+      "customStatusPlaceholder": "Up late revising, say hi",
+      "customStatusHint": "Up to {max} characters, checked for safety.",
+      "customStatusError": "Please enter between 1 and {max} characters.",
+      "saveCustomStatus": "Use custom status"
+    },
+    "profileCard": {
+      "avatarLabel": "{name}'s profile picture",
+      "countryLabel": "Country: {country}",
+      "languagesHeading": "Spoken languages",
+      "interestsHeading": "Interests",
+      "callButton": "Call {name}"
+    },
+    "takeOverDialog": {
+      "title": "Take over Open to talk on this device?",
+      "description": "You are already open on another device.",
+      "body": "Confirming will move your active Open to talk session here and close the other device.",
+      "confirm": "Use this device"
     }
   }
 }
