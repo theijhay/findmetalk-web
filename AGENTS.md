@@ -97,9 +97,11 @@ fails, do not push. Never weaken a gate to get green: no `@ts-ignore`,
 - **API types are generated, never written by hand.** `contract/` holds a
   copy of the API's `openapi.json` and `events.schema.json`; `src/types/api.gen.ts`
   and `src/types/events.gen.ts` are generated from it.
-- When the API changes: `npm run contract:sync` (reads
-  `../findmetalk-api/contract/`, or `API_CONTRACT_DIR`), commit both the copied
-  contract and the regenerated types. `make ci` fails if they drift.
+- When the API changes: `npm run contract:sync` reads the contract from
+  findmetalk-api's `origin/development` in git (`../findmetalk-api`, or
+  `API_REPO`), whatever branch that checkout is on. Commit both the copied
+  contract and the regenerated types. `make ci` fails if they drift from the
+  API's `development`. Never bypass the check with `API_CONTRACT_DIR=contract`.
 - Every feature issue in `findmetalk-api` lists its endpoints, bodies and
   error codes. Build against those; if the contract does not have what the UI
   needs, ask Isaac. Never invent an endpoint.
