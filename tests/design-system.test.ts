@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import vm from "node:vm";
 
 import {
   APPEARANCE_BOOTSTRAP_SCRIPT,
@@ -11,6 +12,7 @@ import {
   getDefaultThemeForPeriod,
   getSkyPeriod,
   getStatusMeta,
+  isThemePreference,
   resolveAppearance,
   SKY_PERIODS,
   STATUS_META,
@@ -217,9 +219,75 @@ test("Spec 9.6: self-hosted typeface contains every Yoruba, Hausa, Igbo and Fren
   const fontReadme = readFileSync(path.join(SRC, "app/fonts/README.md"), "utf8");
   assert.ok(ofl.includes("SIL OPEN FONT LICENSE Version 1.1"));
   assert.ok(fontReadme.includes("NotoSans-Variable.woff2"));
+  assert.ok(fontReadme.includes("0aaad2682589cad9f21b1e9e100262efab372ac8a4f69d83f9d743768c1973c0"));
+});
 
-  // Pre-paint bootstrap script sets data-theme and data-sky without optional chaining
-  assert.ok(APPEARANCE_BOOTSTRAP_SCRIPT.includes('setAttribute("data-theme"'));
-  assert.ok(APPEARANCE_BOOTSTRAP_SCRIPT.includes('setAttribute("data-sky"'));
+test("Spec 9.2, 9.6: pre-paint bootstrap script matches resolveAppearance and getSkyPeriod across every hour and preference", () => {
   assert.equal(APPEARANCE_BOOTSTRAP_SCRIPT.includes("?."), false);
+
+  const storageCases: ReadonlyArray<{
+    label: string;
+    getItem: (key: string) => string | null;
+    expectedPref: "auto" | "light" | "dark";
+  }> = [
+    { label: "auto", getItem: () => "auto", expectedPref: "auto" },
+    { label: "light", getItem: () => "light", expectedPref: "light" },
+    { label: "dark", getItem: () => "dark", expectedPref: "dark" },
+    { label: "missing", getItem: () => null, expectedPref: "auto" },
+    { label: "invalid", getItem: () => "unexpected", expectedPref: "auto" },
+    {
+      label: "throwing localStorage",
+      getItem: () => {
+        throw new Error("SecurityError: storage disabled");
+      },
+      expectedPref: "auto",
+    },
+  ];
+
+  for (let hour = 0; hour < 24; hour += 1) {
+    for (const storageCase of storageCases) {
+      const attrs: Record<string, string> = {};
+      const document = {
+        documentElement: {
+          setAttribute: (name: string, value: string) => {
+            attrs[name] = value;
+          },
+        },
+      };
+      const window = {
+        localStorage: {
+          getItem: storageCase.getItem,
+        },
+      };
+      class FakeDate {
+        getHours(): number {
+          return hour;
+        }
+      }
+
+      vm.runInNewContext(APPEARANCE_BOOTSTRAP_SCRIPT, {
+        window,
+        document,
+        Date: FakeDate,
+      });
+
+      const expected = resolveAppearance(
+        isThemePreference(storageCase.expectedPref) ? storageCase.expectedPref : "auto",
+        hour,
+      );
+      if (storageCase.expectedPref === "auto") {
+        assert.equal(expected.sky, getSkyPeriod(hour));
+      }
+      assert.equal(
+        attrs["data-theme"],
+        expected.theme,
+        `hour=${hour} (${storageCase.label}): expected data-theme=${expected.theme}, got ${attrs["data-theme"]}`,
+      );
+      assert.equal(
+        attrs["data-sky"],
+        expected.sky,
+        `hour=${hour} (${storageCase.label}): expected data-sky=${expected.sky}, got ${attrs["data-sky"]}`,
+      );
+    }
+  }
 });
