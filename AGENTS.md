@@ -18,7 +18,9 @@ and `CLAUDE.md` point here; this file is the only copy of the rules.
 - **Implementers** (Codex, Gemini) build the UI and open pull requests.
 - **The reviewer** (Claude) reviews every pull request. Fixes for review
   findings land as new commits on the same branch.
-- **Isaac** owns the product and is the only person who merges.
+- **The reviewer** also merges the pull requests it approves into
+  `development`.
+- **Isaac** owns the product and is the only person who merges into `main`.
 
 ## Read the spec first
 
@@ -47,6 +49,8 @@ a `findmetalk-docs/` folder or a `*_SPEC.md` file is tracked.
   `<type>/<id>-<short-name>`, e.g. `feat/fr-cloud-3-list-view`. Open the pull
   request into `development`.
 - **Never push to `development` or `main`. Never merge a pull request.**
+  The reviewer merges approved pull requests into `development`; Isaac
+  merges `development` into `main`.
 - Never reuse a branch that was already merged.
 - **One change per pull request.**
 - Commit as `theijhay <olawaleisaacjohn@gmail.com>`. **No AI attribution
