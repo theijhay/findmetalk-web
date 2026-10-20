@@ -55,7 +55,6 @@ export function DesignSystemPreview() {
   const [longCopy, setLongCopy] = React.useState(false);
   const [shellSurface, setShellSurface] = React.useState<ShellSurface>("cloud");
   const [shellBanner, setShellBanner] = React.useState<ShellBannerState>("normal");
-  const [helpOpen, setHelpOpen] = React.useState(false);
   const [openSwitch, setOpenSwitch] = React.useState(true);
   const [closedSwitch, setClosedSwitch] = React.useState(false);
   const [nameValue, setNameValue] = React.useState("Tolu");
@@ -259,7 +258,6 @@ export function DesignSystemPreview() {
           bannerState={shellBanner}
           onSelectTab={(tab) => setShellSurface(tab)}
           onRetry={() => setShellBanner("normal")}
-          onHelpActivate={() => setHelpOpen(true)}
         >
           <Card className="mx-auto flex w-full max-w-lg flex-col items-center gap-4 text-center">
             {shellSurface === "cloud" ? (
@@ -339,23 +337,6 @@ export function DesignSystemPreview() {
             ) : null}
           </Card>
         </AppShell>
-
-        <Dialog
-          open={helpOpen}
-          onClose={() => setHelpOpen(false)}
-          title={tShell("helpSheet.title")}
-          // NEEDS REVIEW (CR-5, Spec 11.6): companion-only positioning and emergency fallback copy
-          description={tShell("helpSheet.companionNotice", { appName: SITE.name })}
-          closeLabel={tCommon("close")}
-          footer={
-            <Button variant="primary" onClick={() => setHelpOpen(false)}>
-              {tShell("helpSheet.backToCloud")}
-            </Button>
-          }
-        >
-          {/* NEEDS REVIEW (CR-2, CR-5, Spec 11.6): emergency fallback text */}
-          <p className="font-medium text-ink">{tShell("helpSheet.emergencyFallback")}</p>
-        </Dialog>
       </section>
 
       {/* Ambient Time-of-Day Palettes */}

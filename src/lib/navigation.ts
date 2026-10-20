@@ -25,6 +25,12 @@ export const SHELL_BANNER_STATES = [
 ] as const;
 export type ShellBannerState = (typeof SHELL_BANNER_STATES)[number];
 
+/**
+ * Default call/session reconnect window in seconds when runtime config
+ * (`calls.reconnect_window_seconds`) has not been loaded yet (spec 7.5).
+ */
+export const DEFAULT_RECONNECT_WINDOW_SECONDS = 15;
+
 export interface NavItemConfig {
   readonly id: NavTab;
   readonly href: string;

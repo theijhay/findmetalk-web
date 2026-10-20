@@ -8,6 +8,7 @@ import { HelpControl } from "@/components/layout/help-control";
 import { Banner, Button } from "@/components/ui";
 import { SITE } from "@/config/site";
 import {
+  DEFAULT_RECONNECT_WINDOW_SECONDS,
   isHelpControlVisible,
   NAV_ITEMS,
   type NavTab,
@@ -21,6 +22,7 @@ export interface AppShellProps {
   surface?: ShellSurface;
   activeTab?: NavTab | null;
   bannerState?: ShellBannerState;
+  reconnectWindowSeconds?: number;
   onSelectTab?: (tab: NavTab) => void;
   onRetry?: () => void;
   onHelpActivate?: () => void;
@@ -65,6 +67,7 @@ export function AppShell({
   surface = "cloud",
   activeTab = surface === "cloud" || surface === "recents" || surface === "settings" ? surface : null,
   bannerState = "normal",
+  reconnectWindowSeconds = DEFAULT_RECONNECT_WINDOW_SECONDS,
   onSelectTab,
   onRetry,
   onHelpActivate,
@@ -200,7 +203,9 @@ export function AppShell({
             <Banner
               tone="caution"
               title={t("banners.reconnectingTitle")}
-              description={t("banners.reconnectingBody")}
+              description={t("banners.reconnectingBody", {
+                seconds: reconnectWindowSeconds,
+              })}
             />
           ) : null}
           {bannerState === "error" ? (

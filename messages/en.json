@@ -75,7 +75,7 @@
       "offlineTitle": "You are offline",
       "offlineBody": "{appName} needs a connection to find someone to talk to.",
       "reconnectingTitle": "Reconnecting...",
-      "reconnectingBody": "Holding your place for up to 15 seconds while your network recovers.",
+      "reconnectingBody": "Holding your place for up to {seconds} seconds while your network recovers.",
       "errorTitle": "Something went wrong",
       "errorBody": "We could not reach {appName} right now. Please try again."
     },
