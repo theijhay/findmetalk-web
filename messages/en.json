@@ -21,5 +21,170 @@
     "upstream_unavailable": "We can't reach {appName} right now. Please try again.",
     "upstream_timeout": "That took too long. Please try again.",
     "unknown": "Something went wrong. Please try again."
+  },
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "retry": "Try again",
+    "loading": "Loading",
+    "on": "On",
+    "off": "Off"
+  },
+  "languages": {
+    "en": "English",
+    "pcm": "Nigerian Pidgin",
+    "yo": "Yorùbá",
+    "ha": "Hausa",
+    "ig": "Igbo",
+    "fr": "Français"
+  },
+  "interests": {
+    "music": "Music",
+    "books": "Books",
+    "football": "Football",
+    "study": "Study",
+    "late_night": "Late night"
+  },
+  "intents": {
+    "want_to_talk": "Want to talk",
+    "happy_to_listen": "Happy to listen"
+  },
+  "statusPresets": {
+    "just_chat": "Just want to chat",
+    "rough_day": "Had a rough day",
+    "happy_to_listen": "Happy to listen",
+    "cant_sleep": "Can't sleep",
+    "practicing_language": "Practicing a language",
+    "bored_say_hi": "Bored, say hi",
+    "study_break": "Study break",
+    "custom": "Up late revising, say hi"
+  },
+  "preview": {
+    "title": "{appName} design system preview",
+    "subtitle": "Calm, warm, human tokens, typography and shared UI primitives across time-of-day palettes and component states.",
+    "controls": {
+      "heading": "Appearance and stress controls",
+      "themeLabel": "Theme mode",
+      "themeAuto": "Auto (local time)",
+      "themeLight": "Light override",
+      "themeDark": "Dark override",
+      "timeLabel": "Simulate time of day",
+      "timeLive": "Live clock",
+      "timeDawn": "Dawn (06:00)",
+      "timeDay": "Day (13:00)",
+      "timeDusk": "Dusk (18:30)",
+      "timeNight": "Night (23:00)",
+      "longCopyLabel": "40% longer copy check",
+      "longCopyDescription": "Expands labels and descriptions to verify layouts never clip or overflow in longer translations."
+    },
+    "palettes": {
+      "heading": "Ambient time-of-day palettes (Spec 9.2)",
+      "description": "Every colour token is a plain hex value in globals.css meeting WCAG 2.2 AA contrast.",
+      "dawn": "Dawn (05:00 to 07:59)",
+      "day": "Day (08:00 to 16:59)",
+      "dusk": "Dusk (17:00 to 19:59)",
+      "night": "Night (20:00 to 04:59)",
+      "skyPreview": "Living sky backdrop and orb glow",
+      "surfacePreview": "Surface card with primary and secondary ink",
+      "secondarySample": "Calm conversation, voice only, no pressure."
+    },
+    "statuses": {
+      "heading": "Status preset colours and paired icons (Spec 9.2, 9.4)",
+      "description": "Every status colour is paired with a distinct icon and text so colour is never the only signal."
+    },
+    "typography": {
+      "heading": "Self-hosted typeface and six-language character specimen",
+      "description": "Self-hosted variable Noto Sans loaded via next/font/local with full coverage for Yoruba, Hausa, Igbo, Nigerian Pidgin, French and English.",
+      "requiredGlyphs": "Required characters"
+    },
+    "buttons": {
+      "heading": "Button and IconButton",
+      "primary": "Enter the cloud",
+      "secondary": "Browse open people",
+      "quiet": "Maybe later",
+      "danger": "End call now",
+      "disabled": "Call (turn on Open to talk first)",
+      "longPrimary": "Enter the shared voice cloud and connect with someone open right now",
+      "iconMute": "Mute microphone",
+      "iconHelp": "I need help",
+      "iconSettings": "Open settings",
+      "iconEnd": "End call"
+    },
+    "switches": {
+      "heading": "Switch",
+      "openLabel": "Open to talk",
+      "openDescription": "Visible in the cloud so anyone open can invite you to a voice call.",
+      "closedLabel": "Open to talk (off by default)",
+      "closedDescription": "You can browse the cloud while closed. Turn this on when you want to talk.",
+      "disabledLabel": "Noise suppression (unavailable without microphone)"
+    },
+    "inputs": {
+      "heading": "TextField, Select and 6-digit CodeInput",
+      "nameLabel": "Display name",
+      "namePlaceholder": "2 to 24 characters",
+      "nameHint": "Shown on your profile card in the cloud.",
+      "nameErrorLabel": "Display name (error state)",
+      "nameError": "Please choose a name between 2 and 24 characters.",
+      "nameDisabledLabel": "Account email (verified)",
+      "languageLabel": "Spoken language",
+      "languageHint": "Used to match you with people who share your language.",
+      "languageErrorLabel": "Spoken language (error state)",
+      "languageError": "Please pick at least one spoken language.",
+      "codeLabel": "One-time verification code",
+      "codeHint": "Enter the 6-digit code sent to your email.",
+      "codeErrorLabel": "One-time verification code (error state)",
+      "codeError": "That code has expired or does not match. Please try again.",
+      "codeDigit": "Digit {index} of {total}"
+    },
+    "chipsAndAvatars": {
+      "heading": "Chip and Avatar (presets and approved photo)",
+      "chipsLabel": "Filter and interest chips",
+      "avatarsLabel": "Curated illustrated avatars (orbs and cards)",
+      "avatarPresetLabel": "Illustrated avatar {id}",
+      "photoCardLabel": "{name}, profile card avatar with approved photo",
+      "photoOrbLabel": "{name}, sky orb avatar (photo hidden on orbs per FR-PROF-6)"
+    },
+    "cardsAndStates": {
+      "heading": "Card, Skeleton and EmptyState",
+      "cardStandardTitle": "Standard profile card surface",
+      "cardStandardBody": "Photos appear only on the profile card and incoming-call screen, never on sky orbs.",
+      "cardElevatedTitle": "Elevated call invitation card",
+      "cardElevatedBody": "Every call is an invitation. Accept or skip silently.",
+      "callAction": "Call {name}",
+      "skeletonCardLabel": "Loading person card",
+      "skeletonRowLabel": "Loading cloud list row",
+      "emptyTitle": "No one's available right now.",
+      "emptyBody": "Try again in a moment, or turn on Open to talk so others can find you.",
+      "emptyAction": "Turn on Open to talk"
+    },
+    "feedback": {
+      "heading": "Banner, Toast, Dialog and Sheet",
+      "bannerInfoTitle": "Browsing while closed",
+      "bannerInfoBody": "Turn on Open to talk whenever you are ready to receive voice invitations.",
+      "bannerGoodTitle": "Connection is clear",
+      "bannerGoodBody": "Voice audio is encrypted and stable.",
+      "bannerCautionTitle": "Reconnecting...",
+      "bannerCautionBody": "Holding the call for up to 15 seconds while your network recovers.",
+      "bannerDangerTitle": "We can't reach {appName} right now.",
+      "bannerDangerBody": "Check your connection and try again.",
+      "toastNeutralTitle": "Added to Recents",
+      "toastNeutralBody": "You can call Tolu again whenever they are open to talk.",
+      "toastGoodTitle": "You are now open to talk",
+      "toastGoodBody": "Your orb is visible in the cloud.",
+      "toastCautionTitle": "Poor network quality",
+      "toastCautionBody": "Moving closer to your router may help keep audio smooth.",
+      "toastDangerTitle": "Microphone permission blocked",
+      "toastDangerBody": "Allow microphone access in your browser settings to join a voice call.",
+      "dismissToast": "Dismiss notification",
+      "dialogTitle": "Take over Open to talk on this device?",
+      "dialogDescription": "You are already open on another device. Confirming will move your active session here.",
+      "dialogBody": "Only one device can be open in the cloud at a time so calls reach the right place.",
+      "openDialogButton": "Open modal Dialog",
+      "sheetTitle": "Tolu",
+      "sheetDescription": "Speaks English and Yorùbá · Happy to listen",
+      "sheetBody": "Select Call to send an invitation. If Tolu is unavailable, you will return calmly to the cloud.",
+      "openSheetButton": "Open bottom Sheet"
+    }
   }
 }
