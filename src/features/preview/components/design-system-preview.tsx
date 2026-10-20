@@ -31,6 +31,8 @@ import {
   PREVIEW_STATUS_LIST,
 } from "@/components/ui/fixtures";
 import { SITE } from "@/config/site";
+import { LandingScreen } from "@/features/onboarding/components/landing-screen";
+import type { LandingLegalDocId } from "@/features/onboarding/landing-meta";
 import type { ShellBannerState, ShellSurface } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +55,7 @@ export function DesignSystemPreview() {
     useAppearance();
 
   const [longCopy, setLongCopy] = React.useState(false);
+  const [landingDoc, setLandingDoc] = React.useState<LandingLegalDocId | null>(null);
   const [shellSurface, setShellSurface] = React.useState<ShellSurface>("cloud");
   const [shellBanner, setShellBanner] = React.useState<ShellBannerState>("normal");
   const [openSwitch, setOpenSwitch] = React.useState(true);
@@ -337,6 +340,46 @@ export function DesignSystemPreview() {
             ) : null}
           </Card>
         </AppShell>
+      </section>
+
+      {/* Landing Page (Spec 7.1, P7, CR-5) */}
+      <section
+        id="landing-section"
+        aria-labelledby="preview-landing-heading"
+        className="flex flex-col gap-4"
+      >
+        <div>
+          <h2 id="preview-landing-heading" className="text-lg font-semibold text-ink">
+            {t("landing.heading")}
+          </h2>
+          <p className="mt-1 text-sm text-ink-secondary">{t("landing.description")}</p>
+        </div>
+
+        <Card className="flex flex-col gap-3">
+          <span className="text-sm font-medium text-ink">{t("landing.stateLabel")}</span>
+          <div className="flex flex-wrap gap-2">
+            <Chip selected={landingDoc === null} onClick={() => setLandingDoc(null)}>
+              {t("landing.stateDefault")}
+            </Chip>
+            <Chip selected={landingDoc === "rules"} onClick={() => setLandingDoc("rules")}>
+              {t("landing.stateRules")}
+            </Chip>
+            <Chip selected={landingDoc === "privacy"} onClick={() => setLandingDoc("privacy")}>
+              {t("landing.statePrivacy")}
+            </Chip>
+            <Chip selected={landingDoc === "terms"} onClick={() => setLandingDoc("terms")}>
+              {t("landing.stateTerms")}
+            </Chip>
+          </div>
+        </Card>
+
+        <LandingScreen
+          embedded
+          activeDoc={landingDoc}
+          onActiveDocChange={setLandingDoc}
+          longCopy={longCopy}
+          onEnter={() => setShellSurface("cloud")}
+        />
       </section>
 
       {/* Ambient Time-of-Day Palettes */}
