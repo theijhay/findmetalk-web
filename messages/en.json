@@ -365,6 +365,7 @@
       "interestsLabel": "Interests"
     },
     "ownOrb": {
+      "defaultViewerName": "You",
       "avatarLabel": "{name} own orb, Open to talk {state}",
       "stateOpen": "Your orb is visible in the sky",
       "stateClosed": "Your orb is dimmed (off by default)",

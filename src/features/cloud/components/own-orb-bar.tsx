@@ -117,7 +117,12 @@ export function OwnOrbBar({
 
   return (
     <>
-      <div className="mx-auto w-full max-w-xl">
+      <div
+        className={cn(
+          "mx-auto w-full max-w-xl",
+          !inlineSheet && "sticky bottom-2 z-20",
+        )}
+      >
         <div
           className={cn(
             "flex flex-col gap-3 rounded-[var(--radius-card)] border bg-surface-raised/95 p-3.5 shadow-[var(--shadow-raised)] backdrop-blur-md transition-opacity duration-[var(--duration-normal)] sm:flex-row sm:items-center sm:justify-between",

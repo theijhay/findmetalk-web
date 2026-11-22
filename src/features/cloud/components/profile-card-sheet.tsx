@@ -111,7 +111,9 @@ export function ProfileCardSheet({
             {profile.country ? (
               <p className="text-xs text-ink-muted">
                 {tCloud("profileCard.countryLabel", {
-                  country: tCloud(`countries.${profile.country}`),
+                  country: tCloud.has(`countries.${profile.country}`)
+                    ? tCloud(`countries.${profile.country}`)
+                    : profile.country,
                 })}
               </p>
             ) : null}

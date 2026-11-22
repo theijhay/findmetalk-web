@@ -52,7 +52,7 @@ export type CloudScreenDataState =
   | "quick_match_empty";
 
 export interface CloudViewerSummary {
-  readonly display_name: string;
+  readonly display_name?: string;
   readonly avatar_id:
     | "avatar_01"
     | "avatar_02"
@@ -67,7 +67,6 @@ export interface CloudViewerSummary {
 }
 
 const DEFAULT_VIEWER: CloudViewerSummary = {
-  display_name: "You",
   avatar_id: "avatar_02",
   languages: ["en"],
   interests: [],
@@ -590,7 +589,9 @@ export function CloudScreen({
                             </h3>
                             {entry.country ? (
                               <span className="rounded-[var(--radius-sm)] bg-surface-sunken px-2 py-0.5 text-xs font-medium text-ink-secondary">
-                                {tCloud(`countries.${entry.country}`)}
+                                {tCloud.has(`countries.${entry.country}`)
+                                  ? tCloud(`countries.${entry.country}`)
+                                  : entry.country}
                               </span>
                             ) : null}
                           </div>
@@ -694,7 +695,7 @@ export function CloudScreen({
 
         {/* Own orb fixed at bottom centre with Open to talk switch (Spec 9.2) */}
         <OwnOrbBar
-          viewerName={viewer.display_name}
+          viewerName={viewer.display_name ?? tCloud("ownOrb.defaultViewerName")}
           viewerAvatarId={viewer.avatar_id}
           isOpen={presenceState === "open"}
           status={ownStatus}
