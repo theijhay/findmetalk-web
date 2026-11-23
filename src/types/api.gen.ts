@@ -34,10 +34,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send Code */
+        post: operations["send_code_api_v1_auth_code_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check Code */
+        post: operations["check_code_api_v1_auth_verify_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** CodeRequest */
+        CodeRequest: {
+            /** Email */
+            email: string;
+        };
+        /** CodeResponse */
+        CodeResponse: {
+            /** Expires In Seconds */
+            expires_in_seconds: number;
+            /** Resend After Seconds */
+            resend_after_seconds: number;
+        };
         /** ErrorDetail */
         ErrorDetail: {
             /** Code */
@@ -77,6 +123,72 @@ export interface components {
             checks: {
                 [key: string]: "ok" | "unavailable";
             };
+        };
+        /** UserMe */
+        UserMe: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Email */
+            email: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "suspended" | "banned";
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "user" | "moderator" | "owner";
+            /** Age Confirmed At */
+            age_confirmed_at?: string | null;
+            /** Rules Version Accepted */
+            rules_version_accepted?: string | null;
+            /** Recording Notice Version Accepted */
+            recording_notice_version_accepted?: string | null;
+            /**
+             * Needs Acceptance
+             * @default true
+             */
+            needs_acceptance: boolean;
+            /**
+             * Has Profile
+             * @default false
+             */
+            has_profile: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** VerifyRequest */
+        VerifyRequest: {
+            /** Email */
+            email: string;
+            /** Code */
+            code: string;
+        };
+        /** VerifyResponse */
+        VerifyResponse: {
+            /** Access Token */
+            access_token: string;
+            /** Refresh Token */
+            refresh_token: string;
+            /**
+             * Token Type
+             * @default bearer
+             * @constant
+             */
+            token_type: "bearer";
+            /** Expires In Seconds */
+            expires_in_seconds: number;
+            /** Is New User */
+            is_new_user: boolean;
+            user: components["schemas"]["UserMe"];
         };
     };
     responses: never;
@@ -154,6 +266,117 @@ export interface operations {
             };
             /** @description Service Unavailable */
             503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    send_code_api_v1_auth_code_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CodeResponse"];
+                };
+            };
+            /** @description Validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description too_many_requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    check_code_api_v1_auth_verify_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyResponse"];
+                };
+            };
+            /** @description auth.code_invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description too_many_requests */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
