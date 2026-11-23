@@ -10,5 +10,7 @@
   "home.legal.privacyTitle": "REC-2",
   "home.legal.privacyBody": "REC-2",
   "home.legal.termsTitle": "Spec 11.5",
-  "home.legal.termsBody": "Spec 11.5"
+  "home.legal.termsBody": "Spec 11.5",
+  "calls.recording.badge": "REC-2",
+  "calls.recording.notice": "REC-2"
 }

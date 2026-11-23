@@ -61,7 +61,9 @@
     "call": {
       "caller_not_open": "Turn on Open to talk before starting a call.",
       "no_one_available": "No one's available right now. Try again in a moment?",
-      "already_active": "You are already in a call or Circle."
+      "already_active": "You are already in a call or Circle.",
+      "unavailable": "Not available right now. Try someone else in the cloud?",
+      "request_closed": "That call invitation is no longer active."
     }
   },
   "common": {
@@ -313,6 +315,22 @@
       "scenarioError": "Feed error state",
       "scenarioOpenElsewhere": "409 presence.open_elsewhere dialog",
       "scenarioQuickMatchEmpty": "409 call.no_one_available notice"
+    },
+    "calls": {
+      "heading": "Call screens: incoming, ringing, in call and after the call",
+      "description": "Every 1:1 voice call state rendered from API #22, #26, #30 and #31 fixtures, with End, Mute, Block, Report and the recording indicator always visible during active calls.",
+      "scenarioLabel": "Call state",
+      "scenarioIncoming": "Incoming call (ripple + card)",
+      "scenarioRinging": "Outgoing ringing",
+      "scenarioUnavailable": "Not available right now + suggestions",
+      "scenarioInCallRecorded": "In call (recorded for safety)",
+      "scenarioInCallUnrecorded": "In call (unrecorded, muted)",
+      "scenarioInCallPoor": "In call (poor connection)",
+      "scenarioReconnecting": "Reconnecting (15s window)",
+      "scenarioNetworkEnded": "Graceful end (Try again)",
+      "scenarioPostCall": "After the call (feedback + Talk again)",
+      "scenarioReportOpen": "In-call Report sheet",
+      "scenarioBlockOpen": "In-call Block dialog"
     }
   },
   "cloud": {
@@ -393,6 +411,117 @@
       "description": "You are already open on another device.",
       "body": "Confirming will move your active Open to talk session here and close the other device.",
       "confirm": "Use this device"
+    }
+  },
+  "calls": {
+    "idle": {
+      "title": "No active call right now",
+      "body": "Head back to the cloud whenever you feel like talking with someone.",
+      "backToCloud": "Back to the cloud"
+    },
+    "recording": {
+      "badge": "Recorded for safety",
+      "notice": "Audio for this call is recorded server-side for safety moderation only and deleted automatically after the retention window unless attached to a report."
+    },
+    "quality": {
+      "good": "Clear connection",
+      "fair": "Fair connection",
+      "poor": "Weak connection",
+      "reconnecting": "Reconnecting"
+    },
+    "incoming": {
+      "regionLabel": "Incoming voice call",
+      "ownOrbLabel": "Your orb with incoming call ripple",
+      "eyebrow": "Incoming voice call",
+      "heading": "{name} would like to talk",
+      "subtitle": "Voice only. Accept when you are ready, or skip quietly.",
+      "muteRing": "Mute ring",
+      "unmuteRing": "Unmute ring",
+      "acceptButton": "Accept",
+      "skipButton": "Skip",
+      "silentSkipNote": "Skipping is private. They will only see that you are not available right now."
+    },
+    "ringing": {
+      "regionLabel": "Calling someone",
+      "status": "Ringing...",
+      "subtitle": "Waiting for them to accept. Voice connects only if they choose to answer.",
+      "cancelButton": "Cancel call"
+    },
+    "unavailable": {
+      "regionLabel": "Person not available",
+      "title": "Not available right now",
+      "body": "{name} can't take a call at the moment. Try someone else who is open, or check back shortly.",
+      "backToCloud": "Back to the cloud",
+      "suggestionsHeading": "Others open to talk right now",
+      "suggestionsSubtitle": "People currently open in the cloud who share your languages."
+    },
+    "inCall": {
+      "regionLabel": "Active voice call",
+      "elapsedLabel": "In voice call · {duration}",
+      "reconnectingStatus": "Trying to reconnect...",
+      "micLiveStatus": "Microphone is on",
+      "micMutedStatus": "Microphone is muted",
+      "controlsLabel": "Call and safety controls",
+      "muteButton": "Mute",
+      "unmuteButton": "Unmute",
+      "endButton": "End",
+      "reportButton": "Report",
+      "blockButton": "Block"
+    },
+    "reconnecting": {
+      "title": "Reconnecting...",
+      "body": "Connection dropped. Holding the call for up to {seconds} seconds before ending calmly."
+    },
+    "poorConnection": {
+      "title": "Weak connection",
+      "body": "Audio may pause briefly. Moving to a steadier signal can help."
+    },
+    "networkEnded": {
+      "bannerTitle": "Connection could not be restored",
+      "bannerBody": "The call ended after the reconnect window closed.",
+      "title": "The connection dropped",
+      "subtitle": "Your voice call with {name} ended cleanly because of a network issue.",
+      "tryAgainButton": "Try again"
+    },
+    "postCall": {
+      "regionLabel": "After the call",
+      "title": "Call ended with {name}",
+      "durationLabel": "Spoke for {duration}",
+      "subtitle": "Take a breath. Everything here is optional and private.",
+      "feedbackPrompt": "How did that conversation feel?",
+      "feedbackGroupLabel": "Private call feedback",
+      "thumbsUp": "Good talk",
+      "thumbsDown": "Not good",
+      "feedbackPrivateNote": "Private to you. Never shown to the other person.",
+      "feedbackSaved": "Saved privately. Thank you for helping keep the cloud welcoming.",
+      "talkAgainButton": "Talk again (save to Recents)",
+      "talkAgainSaved": "Saved to Recents",
+      "reportButton": "Report a problem",
+      "doneButton": "Done"
+    },
+    "blockDialog": {
+      "title": "Block {name}?",
+      "description": "This ends the call immediately and removes you from each other's cloud and Recents.",
+      "body": "Blocking is mutual and permanent. {name} will not be told they were blocked.",
+      "confirmButton": "Block and end call"
+    },
+    "reportSheet": {
+      "title": "Report {name}",
+      "description": "Submitting a report ends the call immediately and blocks them for you.",
+      "reasonLabel": "What happened?",
+      "noteLabel": "Optional note",
+      "notePlaceholder": "Add any short detail that helps a moderator review this call",
+      "noteHint": "Up to 500 characters. Reviewed by a human moderator.",
+      "submitButton": "Submit report and end call"
+    },
+    "reportReasons": {
+      "harassment": "Harassment",
+      "sexual_content": "Sexual content",
+      "hate": "Hate speech",
+      "scam": "Scam or solicitation",
+      "underage": "Possibly under 18",
+      "self_harm": "Self-harm concern",
+      "other": "Other"
     }
   }
 }
