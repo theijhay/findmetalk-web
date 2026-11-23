@@ -31,6 +31,15 @@ import {
   PREVIEW_STATUS_LIST,
 } from "@/components/ui/fixtures";
 import { SITE } from "@/config/site";
+import { CallScreen } from "@/features/calls/components/call-screen";
+import {
+  ACTIVE_CALL_RECORDED_FIXTURE,
+  ACTIVE_CALL_UNRECORDED_FIXTURE,
+  CALL_PEER_CARD_FIXTURE,
+  CALL_VIEWER_USER_ID,
+  INCOMING_CALL_FIXTURE,
+  UNAVAILABLE_SUGGESTIONS_FIXTURE,
+} from "@/features/calls/fixtures";
 import {
   CloudScreen,
   type CloudScreenDataState,
@@ -43,9 +52,26 @@ import {
 } from "@/features/cloud/fixtures";
 import { LandingScreen } from "@/features/onboarding/components/landing-screen";
 import type { LandingLegalDocId } from "@/features/onboarding/landing-meta";
+import type {
+  CallConnectionQuality,
+  CallScreenPhase,
+} from "@/lib/calls";
 import type { CloudViewMode, PresenceStateValue } from "@/lib/cloud";
 import type { ShellBannerState, ShellSurface } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
+
+type CallPreviewScenario =
+  | "incoming"
+  | "ringing"
+  | "unavailable"
+  | "in_call_recorded"
+  | "in_call_unrecorded"
+  | "in_call_poor"
+  | "reconnecting"
+  | "network_ended"
+  | "post_call"
+  | "report_open"
+  | "block_open";
 
 type CloudPreviewScenario =
   | "sky_open"
@@ -82,7 +108,145 @@ export function DesignSystemPreview() {
   const [landingDoc, setLandingDoc] = React.useState<LandingLegalDocId | null>(null);
   const [cloudScenario, setCloudScenario] =
     React.useState<CloudPreviewScenario>("sky_open");
+  const [callScenario, setCallScenario] =
+    React.useState<CallPreviewScenario>("in_call_recorded");
   const [shellSurface, setShellSurface] = React.useState<ShellSurface>("cloud");
+
+  const callScenarioConfig = React.useMemo((): {
+    phase: CallScreenPhase;
+    call: typeof ACTIVE_CALL_RECORDED_FIXTURE;
+    connectionQuality: CallConnectionQuality;
+    elapsedSeconds: number;
+    reconnectRemainingSeconds: number;
+    initialMuted: boolean;
+    initialReportOpen: boolean;
+    initialBlockOpen: boolean;
+  } => {
+    switch (callScenario) {
+      case "incoming":
+        return {
+          phase: "incoming",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "good",
+          elapsedSeconds: 0,
+          reconnectRemainingSeconds: 15,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+      case "ringing":
+        return {
+          phase: "ringing",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "good",
+          elapsedSeconds: 0,
+          reconnectRemainingSeconds: 15,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+      case "unavailable":
+        return {
+          phase: "unavailable",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "good",
+          elapsedSeconds: 0,
+          reconnectRemainingSeconds: 15,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+      case "in_call_unrecorded":
+        return {
+          phase: "in_call",
+          call: ACTIVE_CALL_UNRECORDED_FIXTURE,
+          connectionQuality: "good",
+          elapsedSeconds: 265,
+          reconnectRemainingSeconds: 15,
+          initialMuted: true,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+      case "in_call_poor":
+        return {
+          phase: "in_call",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "poor",
+          elapsedSeconds: 512,
+          reconnectRemainingSeconds: 15,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+      case "reconnecting":
+        return {
+          phase: "reconnecting",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "reconnecting",
+          elapsedSeconds: 618,
+          reconnectRemainingSeconds: 9,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+      case "network_ended":
+        return {
+          phase: "network_ended",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "poor",
+          elapsedSeconds: 633,
+          reconnectRemainingSeconds: 0,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+      case "post_call":
+        return {
+          phase: "post_call",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "good",
+          elapsedSeconds: 742,
+          reconnectRemainingSeconds: 15,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+      case "report_open":
+        return {
+          phase: "in_call",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "good",
+          elapsedSeconds: 310,
+          reconnectRemainingSeconds: 15,
+          initialMuted: false,
+          initialReportOpen: true,
+          initialBlockOpen: false,
+        };
+      case "block_open":
+        return {
+          phase: "in_call",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "good",
+          elapsedSeconds: 310,
+          reconnectRemainingSeconds: 15,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: true,
+        };
+      case "in_call_recorded":
+      default:
+        return {
+          phase: "in_call",
+          call: ACTIVE_CALL_RECORDED_FIXTURE,
+          connectionQuality: "good",
+          elapsedSeconds: 428,
+          reconnectRemainingSeconds: 15,
+          initialMuted: false,
+          initialReportOpen: false,
+          initialBlockOpen: false,
+        };
+    }
+  }, [callScenario]);
 
   const largeCloudEntries = React.useMemo(
     () => generateLargeCloudFixture(200),
@@ -579,6 +743,78 @@ export function DesignSystemPreview() {
           initialStatusPickerOpen={cloudScenarioConfig.statusPickerOpen}
           dataState={cloudScenarioConfig.dataState}
           longCopy={longCopy}
+        />
+      </section>
+
+      {/* Call Screens: Incoming, Ringing, In Call and After the Call (Spec 7.4 to 7.6, FR-CALL-4, REC-2, P4, P5) */}
+      <section
+        id="calls-section"
+        aria-labelledby="preview-calls-heading"
+        className="flex flex-col gap-4"
+      >
+        <div>
+          <h2 id="preview-calls-heading" className="text-lg font-semibold text-ink">
+            {t("calls.heading")}
+          </h2>
+          <p className="mt-1 text-sm text-ink-secondary">{t("calls.description")}</p>
+        </div>
+
+        <Card className="flex flex-col gap-3">
+          <span className="text-sm font-medium text-ink">{t("calls.scenarioLabel")}</span>
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                ["incoming", "scenarioIncoming"],
+                ["ringing", "scenarioRinging"],
+                ["unavailable", "scenarioUnavailable"],
+                ["in_call_recorded", "scenarioInCallRecorded"],
+                ["in_call_unrecorded", "scenarioInCallUnrecorded"],
+                ["in_call_poor", "scenarioInCallPoor"],
+                ["reconnecting", "scenarioReconnecting"],
+                ["network_ended", "scenarioNetworkEnded"],
+                ["post_call", "scenarioPostCall"],
+                ["report_open", "scenarioReportOpen"],
+                ["block_open", "scenarioBlockOpen"],
+              ] as const
+            ).map(([key, labelKey]) => (
+              <Chip
+                key={key}
+                selected={callScenario === key}
+                onClick={() => setCallScenario(key)}
+              >
+                {t(`calls.${labelKey}`)}
+              </Chip>
+            ))}
+          </div>
+        </Card>
+
+        <CallScreen
+          key={callScenario}
+          embedded
+          phase={callScenarioConfig.phase}
+          viewerUserId={CALL_VIEWER_USER_ID}
+          viewerAvatarId={CLOUD_VIEWER_FIXTURE.avatar_id}
+          incoming={INCOMING_CALL_FIXTURE}
+          callee={CALL_PEER_CARD_FIXTURE}
+          suggestions={UNAVAILABLE_SUGGESTIONS_FIXTURE}
+          call={callScenarioConfig.call}
+          elapsedSeconds={callScenarioConfig.elapsedSeconds}
+          connectionQuality={callScenarioConfig.connectionQuality}
+          reconnectRemainingSeconds={callScenarioConfig.reconnectRemainingSeconds}
+          initialMuted={callScenarioConfig.initialMuted}
+          initialReportOpen={callScenarioConfig.initialReportOpen}
+          initialBlockOpen={callScenarioConfig.initialBlockOpen}
+          enableAudioEffects={false}
+          longCopy={longCopy}
+          onAccept={() => setCallScenario("in_call_recorded")}
+          onSkip={() => setCallScenario("unavailable")}
+          onCancelOutgoing={() => setCallScenario("unavailable")}
+          onSelectSuggestion={() => setCallScenario("ringing")}
+          onEndCall={() => setCallScenario("post_call")}
+          onBlockPeer={() => setCallScenario("post_call")}
+          onReportPeer={() => setCallScenario("post_call")}
+          onTryAgain={() => setCallScenario("ringing")}
+          onBackToCloud={() => setCallScenario("incoming")}
         />
       </section>
 

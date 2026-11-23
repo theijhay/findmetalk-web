@@ -6,6 +6,7 @@ export const ROUTES = {
   home: "/",
   signIn: "/sign-in",
   cloud: "/cloud",
+  call: "/call",
   recents: "/recents",
   settings: "/settings",
 } as const;

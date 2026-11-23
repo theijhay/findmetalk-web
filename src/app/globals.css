@@ -76,6 +76,8 @@
   --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-fast: 150ms;
   --duration-calm: 260ms;
+  --duration-pulse: 2800ms;
+  --duration-ripple: 2400ms;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -369,6 +371,29 @@ body {
   animation: own-orb-pulse var(--duration-pulse) var(--ease-calm) infinite;
 }
 
+/* Spec 7.4, 9.2: incoming call ripple expanding from the user's orb (transform + opacity only). */
+@keyframes incoming-orb-ripple {
+  0% {
+    opacity: 0.65;
+    transform: scale3d(0.92, 0.92, 1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale3d(1.85, 1.85, 1);
+  }
+}
+
+.incoming-orb-ripple {
+  animation: incoming-orb-ripple var(--duration-ripple) var(--ease-calm) infinite;
+  will-change: transform, opacity;
+}
+
+.incoming-orb-ripple-delayed {
+  animation: incoming-orb-ripple var(--duration-ripple) var(--ease-calm) infinite;
+  animation-delay: 1.2s;
+  will-change: transform, opacity;
+}
+
 /* Spec 9.1, 9.3: nothing moves for people who asked for less motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -381,7 +406,9 @@ body {
   }
 
   .cloud-orb-animated,
-  .own-orb-glow {
+  .own-orb-glow,
+  .incoming-orb-ripple,
+  .incoming-orb-ripple-delayed {
     animation: none !important;
   }
 }
