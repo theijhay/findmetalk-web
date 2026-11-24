@@ -16,7 +16,7 @@
     "contract:check": "node scripts/sync-contract.mjs --check"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "1.3.3",
+    "@radix-ui/react-slot": "1.5.0",
     "@tanstack/react-query": "5.101.4",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
