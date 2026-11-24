@@ -48,11 +48,27 @@
     "upstream_unavailable": "We can't reach {appName} right now. Please try again.",
     "upstream_timeout": "That took too long. Please try again.",
     "unknown": "Something went wrong. Please try again.",
+    "auth": {
+      "code_invalid": "That code is not valid or has expired. Check your email or ask for a new code.",
+      "session_expired": "Your session has expired. Please sign in again."
+    },
     "consent": {
-      "required": "Please confirm the community rules and recording notice before opening to talk."
+      "required": "Please confirm the community rules and recording notice before opening to talk.",
+      "version_outdated": "Our rules or recording notice were updated. Please review and confirm the latest version."
     },
     "profile": {
-      "not_created": "Please finish setting up your profile first."
+      "not_created": "Please finish setting up your profile first.",
+      "display_name_length": "Display name must be between 2 and 24 characters.",
+      "unknown_avatar": "Please choose one of the available avatars.",
+      "languages_count": "Choose between 1 and 3 spoken languages.",
+      "unknown_language": "One of the selected languages is not supported.",
+      "interests_count": "Choose up to 5 interests.",
+      "unknown_interest": "One of the selected interests is not in the list.",
+      "unknown_country": "Please choose a valid country or keep it hidden."
+    },
+    "text": {
+      "profanity": "Please choose a calmer name without offensive words.",
+      "impersonation": "That name cannot be used because it looks like staff or moderation."
     },
     "presence": {
       "open_elsewhere": "You are already open on another device.",
@@ -331,6 +347,23 @@
       "scenarioPostCall": "After the call (feedback + Talk again)",
       "scenarioReportOpen": "In-call Report sheet",
       "scenarioBlockOpen": "In-call Block dialog"
+    },
+    "onboarding": {
+      "heading": "Sign-in and onboarding screens",
+      "description": "Email OTP, 18+ confirmation, rules and recording notice, profile setup with API #17 field validation, microphone permission with per-browser denied recovery, 20-second audio test and landing in the cloud with Open to talk off.",
+      "scenarioLabel": "Onboarding state",
+      "scenarioEmail": "Email entry",
+      "scenarioEmailRateLimited": "Email (429 too_many_requests)",
+      "scenarioCode": "6-digit code + resend timer",
+      "scenarioCodeInvalid": "Code (400 auth.code_invalid)",
+      "scenarioConsent": "18+, rules & recording notice",
+      "scenarioConsentOutdated": "Consent (409 version_outdated)",
+      "scenarioProfile": "Profile setup (photo pending)",
+      "scenarioProfileErrors": "Profile (422 field errors + rejected photo)",
+      "scenarioMicExplainer": "Microphone explainer",
+      "scenarioMicDenied": "Microphone denied (per-browser recovery)",
+      "scenarioMicTest": "Optional 20s mic & speaker test",
+      "scenarioReady": "Ready (Open to talk off by default)"
     }
   },
   "cloud": {
@@ -522,6 +555,137 @@
       "underage": "Possibly under 18",
       "self_harm": "Self-harm concern",
       "other": "Other"
+    }
+  },
+  "onboarding": {
+    "stepProgress": "Step {current} of {total}",
+    "progressAriaLabel": "Sign-in and setup progress",
+    "errorBannerTitle": "Please check and try again",
+    "email": {
+      "title": "Sign in with your email",
+      "subtitle": "We will send a 6-digit one-time code to your email. No password needed to enter {appName}.",
+      "inputLabel": "Email address",
+      "inputPlaceholder": "ada@example.com",
+      "inputHint": "Your email stays private and is never shown to other people.",
+      "invalidError": "Please enter a valid email address.",
+      "submitButton": "Send sign-in code"
+    },
+    "code": {
+      "title": "Check your email",
+      "subtitle": "Enter the 6-digit code we sent to {email}. Codes expire after 10 minutes.",
+      "fallbackEmail": "your email address",
+      "inputLabel": "6-digit sign-in code",
+      "inputHint": "You can paste the full 6-digit code from your email.",
+      "digitAriaLabel": "Code digit {index} of {total}",
+      "incompleteError": "Please enter all {length} digits of your code.",
+      "submitButton": "Verify and continue",
+      "resendCountdown": "Resend code in {time}",
+      "resendButton": "Resend code",
+      "changeEmailButton": "Use a different email"
+    },
+    "consent": {
+      "title": "Before you enter the cloud",
+      "subtitle": "Please confirm a few clear ground rules so {appName} stays calm and safe for everyone.",
+      "outdatedTitle": "Updated terms need your confirmation",
+      "versionTag": "Version {version}",
+      "ageLabel": "I am {age} or older",
+      "ageDetail": "{appName} is strictly for adults aged 18 and over.",
+      "rulesHeading": "Community rules",
+      "rulesSummary": "Treat everyone with warmth and respect. Voice only, no text chat. Harassment, sexual content, hate speech, scams, impersonation, doxxing or contact with minors lead to immediate removal.",
+      "rulesCheckbox": "I agree to the community rules",
+      "recordingHeading": "Recording for safety",
+      "recordingSummary": "Calls and Circles on {appName} may be recorded server-side for safety moderation only. Recordings are never used for ads or training and are deleted automatically after the retention window unless linked to a report. If you do not accept, you cannot make or receive calls.",
+      "recordingCheckbox": "I understand and accept the recording notice",
+      "continueButton": "Continue"
+    },
+    "profile": {
+      "title": "Set up your profile",
+      "subtitle": "Choose how you appear when you are open to talk. You can edit this anytime in Settings.",
+      "displayNameLabel": "Display name",
+      "displayNamePlaceholder": "Ada",
+      "displayNameHint": "Use {min} to {max} characters. No real last name needed.",
+      "avatarLabel": "Choose an illustrated avatar",
+      "avatarHint": "Your avatar appears on your orb in the sky.",
+      "avatarOptionAria": "Avatar option {index}",
+      "photoHeading": "Optional profile photo",
+      "photoHint": "Photos are optional, checked by automated moderation before anyone sees them, and shown only on your profile card and incoming calls (never on orbs).",
+      "photoChooseButton": "Choose photo",
+      "photoRemoveButton": "Remove photo",
+      "photoPendingStatus": "Photo under review. Your illustrated avatar is shown until automated checks complete.",
+      "photoApprovedStatus": "Photo ready. Shown only on your profile card and incoming calls.",
+      "photoRejectedStatus": "That photo could not be used. Your illustrated avatar will be shown instead, or you can pick another photo.",
+      "languagesLabel": "Spoken languages",
+      "languagesHint": "Pick {min} to {max} languages you feel comfortable talking in.",
+      "interestsLabel": "Interests (optional)",
+      "interestsHint": "Pick up to {max} topics to help people start a conversation.",
+      "selectionCount": "{count} of {max} selected",
+      "intentLabel": "How you usually like to connect (optional)",
+      "intentNone": "Prefer not to say",
+      "countryLabel": "Country (optional, hidden by default)",
+      "countryHint": "Hidden unless you choose one here. We never show your location from your IP address.",
+      "countryHiddenOption": "Keep country hidden",
+      "saveButton": "Save profile and continue"
+    },
+    "mic": {
+      "title": "Allow your microphone",
+      "subtitle": "{appName} is voice only. Your browser will ask to use your microphone so people can hear you when you join a call.",
+      "privacyNote": "Your microphone is only active during calls and Circles you choose to join. You can mute yourself at any time.",
+      "allowButton": "Allow microphone",
+      "requestingButton": "Waiting for browser permission...",
+      "skipForNowButton": "Skip for now (browse only)",
+      "deniedTitle": "Microphone access is blocked",
+      "deniedBody": "No problem. Follow the steps for your browser below, then check again.",
+      "browserPickerLabel": "Choose your browser",
+      "retryButton": "Check microphone again",
+      "continueWithoutMic": "Continue to the cloud anyway",
+      "browsers": {
+        "safari_ios": {
+          "label": "iPhone Safari",
+          "step1": "Tap the aA or settings button in Safari's address bar.",
+          "step2": "Open Website Settings and set Microphone to Allow.",
+          "step3": "Close Website Settings and tap Check microphone again below."
+        },
+        "chrome_android": {
+          "label": "Android Chrome",
+          "step1": "Tap the tune or lock icon beside the website address.",
+          "step2": "Tap Permissions, then switch Microphone to Allow.",
+          "step3": "Return to this page and tap Check microphone again."
+        },
+        "firefox": {
+          "label": "Firefox",
+          "step1": "Tap the lock or microphone icon in the address bar.",
+          "step2": "Clear the Blocked microphone permission for this site.",
+          "step3": "Tap Check microphone again and choose Allow."
+        },
+        "desktop": {
+          "label": "Desktop browser",
+          "step1": "Click the site settings or lock icon on the left side of the address bar.",
+          "step2": "Change Microphone from Block to Allow for this site.",
+          "step3": "Reload if prompted, then click Check microphone again."
+        }
+      }
+    },
+    "micTest": {
+      "title": "Quick microphone and speaker test",
+      "subtitle": "Optional {seconds}-second check to make sure your audio feels clear before you enter the cloud.",
+      "micHeading": "Microphone check",
+      "secondsLeft": "{seconds}s left",
+      "meterAriaLabel": "Microphone input level",
+      "startTestButton": "Start 20-second mic check",
+      "stopTestButton": "Stop mic check",
+      "speakerHeading": "Speaker check",
+      "speakerHint": "Play a soft chime to verify you can hear incoming calls and voices.",
+      "speakerPlayedNote": "Soft chime played. If you did not hear it, check your device volume or headphones.",
+      "playChimeButton": "Play soft test chime",
+      "continueButton": "Audio sounds good",
+      "skipButton": "Skip audio test"
+    },
+    "ready": {
+      "title": "You are ready for the cloud",
+      "subtitle": "Take your time looking around. Nobody can call you until you decide you are ready.",
+      "openOffHeading": "Open to talk starts Off by default",
+      "openOffBody": "When you enter the cloud, you can browse calmly first. Switch Open to talk On only when you want to call someone or receive invitations.",
+      "enterCloudButton": "Enter the cloud"
     }
   }
 }
