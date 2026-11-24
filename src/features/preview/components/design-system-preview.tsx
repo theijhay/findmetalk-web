@@ -31,6 +31,13 @@ import {
   PREVIEW_STATUS_LIST,
 } from "@/components/ui/fixtures";
 import { SITE } from "@/config/site";
+import { SignInFlow } from "@/features/auth/components/sign-in-flow";
+import {
+  CONSENT_REQUIREMENTS_FIXTURE,
+  OTP_SEND_FIXTURE,
+  PROFILE_ME_FIXTURE,
+  PROFILE_VALIDATION_ERRORS_FIXTURE,
+} from "@/features/auth/fixtures";
 import { CallScreen } from "@/features/calls/components/call-screen";
 import {
   ACTIVE_CALL_RECORDED_FIXTURE,
@@ -58,7 +65,27 @@ import type {
 } from "@/lib/calls";
 import type { CloudViewMode, PresenceStateValue } from "@/lib/cloud";
 import type { ShellBannerState, ShellSurface } from "@/lib/navigation";
+import type {
+  ApiFieldValidationError,
+  MicPermissionState,
+  OnboardingStep,
+  PhotoModerationState,
+} from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
+
+type OnboardingPreviewScenario =
+  | "email"
+  | "email_rate_limited"
+  | "code"
+  | "code_invalid"
+  | "consent"
+  | "consent_outdated"
+  | "profile"
+  | "profile_errors"
+  | "mic_explainer"
+  | "mic_denied"
+  | "mic_test"
+  | "ready";
 
 type CallPreviewScenario =
   | "incoming"
@@ -110,7 +137,163 @@ export function DesignSystemPreview() {
     React.useState<CloudPreviewScenario>("sky_open");
   const [callScenario, setCallScenario] =
     React.useState<CallPreviewScenario>("in_call_recorded");
+  const [onboardingScenario, setOnboardingScenario] =
+    React.useState<OnboardingPreviewScenario>("email");
   const [shellSurface, setShellSurface] = React.useState<ShellSurface>("cloud");
+
+  const onboardingScenarioConfig = React.useMemo((): {
+    step: OnboardingStep;
+    email: string;
+    code: string;
+    resendSeconds: number;
+    apiErrorCode: string | null;
+    profileDraft?: Partial<typeof PROFILE_ME_FIXTURE>;
+    photoState: PhotoModerationState;
+    profileFieldErrors: readonly ApiFieldValidationError[];
+    micPermission: MicPermissionState;
+  } => {
+    switch (onboardingScenario) {
+      case "email_rate_limited":
+        return {
+          step: "email",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: OTP_SEND_FIXTURE.resend_after_seconds,
+          apiErrorCode: "too_many_requests",
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "prompt",
+        };
+      case "code":
+        return {
+          step: "code",
+          email: "ada@example.com",
+          code: "4829",
+          resendSeconds: 42,
+          apiErrorCode: null,
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "prompt",
+        };
+      case "code_invalid":
+        return {
+          step: "code",
+          email: "ada@example.com",
+          code: "111111",
+          resendSeconds: 0,
+          apiErrorCode: "auth.code_invalid",
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "prompt",
+        };
+      case "consent":
+        return {
+          step: "consent",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: 0,
+          apiErrorCode: null,
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "prompt",
+        };
+      case "consent_outdated":
+        return {
+          step: "consent",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: 0,
+          apiErrorCode: "consent.version_outdated",
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "prompt",
+        };
+      case "profile":
+        return {
+          step: "profile",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: 0,
+          apiErrorCode: null,
+          profileDraft: PROFILE_ME_FIXTURE,
+          photoState: "pending",
+          profileFieldErrors: [],
+          micPermission: "prompt",
+        };
+      case "profile_errors":
+        return {
+          step: "profile",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: 0,
+          apiErrorCode: "validation_failed",
+          profileDraft: {
+            ...PROFILE_ME_FIXTURE,
+            display_name: "A",
+            languages: [],
+          },
+          photoState: "rejected",
+          profileFieldErrors: PROFILE_VALIDATION_ERRORS_FIXTURE,
+          micPermission: "prompt",
+        };
+      case "mic_explainer":
+        return {
+          step: "mic",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: 0,
+          apiErrorCode: null,
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "prompt",
+        };
+      case "mic_denied":
+        return {
+          step: "mic",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: 0,
+          apiErrorCode: null,
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "denied",
+        };
+      case "mic_test":
+        return {
+          step: "mic_test",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: 0,
+          apiErrorCode: null,
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "granted",
+        };
+      case "ready":
+        return {
+          step: "ready",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: 0,
+          apiErrorCode: null,
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "granted",
+        };
+      case "email":
+      default:
+        return {
+          step: "email",
+          email: "ada@example.com",
+          code: "",
+          resendSeconds: OTP_SEND_FIXTURE.resend_after_seconds,
+          apiErrorCode: null,
+          photoState: "none",
+          profileFieldErrors: [],
+          micPermission: "prompt",
+        };
+    }
+  }, [onboardingScenario]);
 
   const callScenarioConfig = React.useMemo((): {
     phase: CallScreenPhase;
@@ -815,6 +998,68 @@ export function DesignSystemPreview() {
           onReportPeer={() => setCallScenario("post_call")}
           onTryAgain={() => setCallScenario("ringing")}
           onBackToCloud={() => setCallScenario("incoming")}
+        />
+      </section>
+
+      {/* Sign-in and Onboarding Screens (Spec 7.1, FR-AUTH-1, FR-AUTH-2, FR-PROF-1 to FR-PROF-5, REC-2) */}
+      <section
+        id="onboarding-section"
+        aria-labelledby="preview-onboarding-heading"
+        className="flex flex-col gap-4"
+      >
+        <div>
+          <h2 id="preview-onboarding-heading" className="text-lg font-semibold text-ink">
+            {t("onboarding.heading")}
+          </h2>
+          <p className="mt-1 text-sm text-ink-secondary">{t("onboarding.description")}</p>
+        </div>
+
+        <Card className="flex flex-col gap-3">
+          <span className="text-sm font-medium text-ink">{t("onboarding.scenarioLabel")}</span>
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                ["email", "scenarioEmail"],
+                ["email_rate_limited", "scenarioEmailRateLimited"],
+                ["code", "scenarioCode"],
+                ["code_invalid", "scenarioCodeInvalid"],
+                ["consent", "scenarioConsent"],
+                ["consent_outdated", "scenarioConsentOutdated"],
+                ["profile", "scenarioProfile"],
+                ["profile_errors", "scenarioProfileErrors"],
+                ["mic_explainer", "scenarioMicExplainer"],
+                ["mic_denied", "scenarioMicDenied"],
+                ["mic_test", "scenarioMicTest"],
+                ["ready", "scenarioReady"],
+              ] as const
+            ).map(([key, labelKey]) => (
+              <Chip
+                key={key}
+                selected={onboardingScenario === key}
+                onClick={() => setOnboardingScenario(key)}
+              >
+                {t(`onboarding.${labelKey}`)}
+              </Chip>
+            ))}
+          </div>
+        </Card>
+
+        <SignInFlow
+          key={onboardingScenario}
+          embedded
+          initialStep={onboardingScenarioConfig.step}
+          initialEmail={onboardingScenarioConfig.email}
+          initialCode={onboardingScenarioConfig.code}
+          initialResendSeconds={onboardingScenarioConfig.resendSeconds}
+          consentRequirements={CONSENT_REQUIREMENTS_FIXTURE}
+          initialProfileDraft={onboardingScenarioConfig.profileDraft}
+          initialPhotoState={onboardingScenarioConfig.photoState}
+          initialMicPermission={onboardingScenarioConfig.micPermission}
+          initialBrowserFamily="safari_ios"
+          apiErrorCode={onboardingScenarioConfig.apiErrorCode}
+          profileFieldErrors={onboardingScenarioConfig.profileFieldErrors}
+          longCopy={longCopy}
+          onFinishToCloud={() => setCloudScenario("sky_closed")}
         />
       </section>
 

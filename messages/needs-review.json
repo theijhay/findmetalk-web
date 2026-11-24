@@ -12,5 +12,13 @@
   "home.legal.termsTitle": "Spec 11.5",
   "home.legal.termsBody": "Spec 11.5",
   "calls.recording.badge": "REC-2",
-  "calls.recording.notice": "REC-2"
+  "calls.recording.notice": "REC-2",
+  "onboarding.consent.ageLabel": "SAFE-1",
+  "onboarding.consent.ageDetail": "SAFE-1",
+  "onboarding.consent.rulesHeading": "SAFE-8",
+  "onboarding.consent.rulesSummary": "SAFE-8",
+  "onboarding.consent.rulesCheckbox": "SAFE-8",
+  "onboarding.consent.recordingHeading": "REC-2",
+  "onboarding.consent.recordingSummary": "REC-2",
+  "onboarding.consent.recordingCheckbox": "REC-2"
 }
