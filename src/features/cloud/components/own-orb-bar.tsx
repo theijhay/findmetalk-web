@@ -120,13 +120,13 @@ export function OwnOrbBar({
       <div
         className={cn(
           "mx-auto w-full max-w-xl",
-          !inlineSheet && "sticky bottom-2 z-20",
+          !inlineSheet && "sticky bottom-4 z-20",
         )}
       >
         <div
           className={cn(
-            "flex flex-col gap-3 rounded-[var(--radius-card)] border bg-surface-raised/95 p-3.5 shadow-[var(--shadow-raised)] backdrop-blur-md transition-opacity duration-[var(--duration-normal)] sm:flex-row sm:items-center sm:justify-between",
-            isOpen ? "border-accent" : "border-line opacity-90",
+            "flex flex-col gap-3 rounded-[var(--radius-sheet)] border bg-surface/85 p-4 shadow-[var(--shadow-raised)] backdrop-blur-md transition-opacity duration-[var(--duration-normal)] sm:flex-row sm:items-center sm:justify-between",
+            isOpen ? "border-accent/60" : "border-line/80 opacity-95",
           )}
         >
           {/* Own orb + status button */}

@@ -27,6 +27,7 @@ export interface AppShellProps {
   onRetry?: () => void;
   onHelpActivate?: () => void;
   inlinePreview?: boolean;
+  fullBleed?: boolean;
   children: React.ReactNode;
   className?: string;
 }
@@ -72,6 +73,7 @@ export function AppShell({
   onRetry,
   onHelpActivate,
   inlinePreview = false,
+  fullBleed = false,
   children,
   className,
 }: AppShellProps) {
@@ -227,7 +229,12 @@ export function AppShell({
       <main
         id={mainId}
         tabIndex={-1}
-        className="mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center px-4 py-6 sm:px-6"
+        className={cn(
+          "flex w-full flex-1 flex-col",
+          fullBleed
+            ? "relative"
+            : "mx-auto max-w-5xl justify-center px-4 py-6 sm:px-6",
+        )}
       >
         {children}
       </main>

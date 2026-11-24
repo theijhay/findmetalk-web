@@ -41,8 +41,8 @@
   --color-on-help: #ffffff;
 
   /* Ambient sky backdrop tokens (spec 9.2) */
-  --color-sky-top: #e8e2d5;
-  --color-sky-bottom: #f7f5f0;
+  --color-sky-top: #cde0f2;
+  --color-sky-bottom: #eef4fa;
   --color-sky-glow: #b8732a;
 
   /* Status preset colours (spec 9.2, 9.4), always paired with an icon or text */
@@ -162,8 +162,8 @@
   --color-help: #5c3d7a;
   --color-on-help: #ffffff;
 
-  --color-sky-top: #e8e2d5;
-  --color-sky-bottom: #f7f5f0;
+  --color-sky-top: #cde0f2;
+  --color-sky-bottom: #eef4fa;
   --color-sky-glow: #b8732a;
 
   --color-status-chat: #8a4b00;
@@ -371,6 +371,37 @@ body {
   animation: own-orb-pulse var(--duration-pulse) var(--ease-calm) infinite;
 }
 
+/* Spec 9.1, 9.2: slow ambient cloud drift using transform only. */
+@keyframes cloud-drift-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(24px, 0, 0);
+  }
+}
+
+@keyframes cloud-drift-reverse {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-20px, 0, 0);
+  }
+}
+
+.cloud-layer-slow {
+  animation: cloud-drift-slow 26s ease-in-out infinite;
+  will-change: transform;
+}
+
+.cloud-layer-reverse {
+  animation: cloud-drift-reverse 32s ease-in-out infinite;
+  will-change: transform;
+}
+
 /* Spec 7.4, 9.2: incoming call ripple expanding from the user's orb (transform + opacity only). */
 @keyframes incoming-orb-ripple {
   0% {
@@ -407,6 +438,8 @@ body {
 
   .cloud-orb-animated,
   .own-orb-glow,
+  .cloud-layer-slow,
+  .cloud-layer-reverse,
   .incoming-orb-ripple,
   .incoming-orb-ripple-delayed {
     animation: none !important;
