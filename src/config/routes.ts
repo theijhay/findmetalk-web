@@ -7,6 +7,8 @@ export const ROUTES = {
   signIn: "/sign-in",
   cloud: "/cloud",
   call: "/call",
+  help: "/help",
+  suspended: "/suspended",
   recents: "/recents",
   settings: "/settings",
 } as const;

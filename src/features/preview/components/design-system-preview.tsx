@@ -57,8 +57,24 @@ import {
   CLOUD_VIEWER_FIXTURE,
   generateLargeCloudFixture,
 } from "@/features/cloud/fixtures";
+import { HelpScreen } from "@/features/help/components/help-screen";
+import {
+  HELP_PREVIEW_LOCALE_NG,
+  HELP_PREVIEW_LOCALE_NONE,
+} from "@/features/help/fixtures";
 import { LandingScreen } from "@/features/onboarding/components/landing-screen";
 import type { LandingLegalDocId } from "@/features/onboarding/landing-meta";
+import { BlockConfirmView } from "@/features/safety/components/block-confirm-view";
+import { ReportScreen } from "@/features/safety/components/report-screen";
+import { SuspensionScreen } from "@/features/safety/components/suspension-screen";
+import {
+  SAFETY_TARGET_USER_FIXTURE,
+  STANDING_APPEAL_OPEN_FIXTURE,
+  STANDING_APPEAL_OVERTURNED_FIXTURE,
+  STANDING_APPEAL_REVIEWING_FIXTURE,
+  STANDING_APPEAL_UPHELD_FIXTURE,
+  STANDING_SUSPENDED_CAN_APPEAL_FIXTURE,
+} from "@/features/safety/fixtures";
 import type {
   CallConnectionQuality,
   CallScreenPhase,
@@ -72,6 +88,19 @@ import type {
   PhotoModerationState,
 } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
+
+type SafetyPreviewScenario =
+  | "help_ng"
+  | "help_global"
+  | "report_form"
+  | "report_done"
+  | "block_confirm"
+  | "block_done"
+  | "suspended_form"
+  | "appeal_open"
+  | "appeal_reviewing"
+  | "appeal_overturned"
+  | "appeal_upheld";
 
 type OnboardingPreviewScenario =
   | "email"
@@ -139,6 +168,8 @@ export function DesignSystemPreview() {
     React.useState<CallPreviewScenario>("in_call_recorded");
   const [onboardingScenario, setOnboardingScenario] =
     React.useState<OnboardingPreviewScenario>("email");
+  const [safetyScenario, setSafetyScenario] =
+    React.useState<SafetyPreviewScenario>("help_ng");
   const [shellSurface, setShellSurface] = React.useState<ShellSurface>("cloud");
 
   const onboardingScenarioConfig = React.useMemo((): {
@@ -1061,6 +1092,134 @@ export function DesignSystemPreview() {
           longCopy={longCopy}
           onFinishToCloud={() => setCloudScenario("sky_closed")}
         />
+      </section>
+
+      {/* Safety, Crisis Help & Suspension Screens (SAFE-2, SAFE-3, CR-1 to CR-5, Spec 11.3) */}
+      <section
+        id="safety-section"
+        aria-labelledby="preview-safety-heading"
+        className="flex flex-col gap-4"
+      >
+        <div>
+          <h2 id="preview-safety-heading" className="text-lg font-semibold text-ink">
+            {t("safety.heading")}
+          </h2>
+          <p className="mt-1 text-sm text-ink-secondary">{t("safety.description")}</p>
+        </div>
+
+        <Card className="flex flex-col gap-3">
+          <span className="text-sm font-medium text-ink">{t("safety.scenarioLabel")}</span>
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                ["help_ng", "scenarioHelpNg"],
+                ["help_global", "scenarioHelpGlobal"],
+                ["report_form", "scenarioReportForm"],
+                ["report_done", "scenarioReportDone"],
+                ["block_confirm", "scenarioBlockConfirm"],
+                ["block_done", "scenarioBlockDone"],
+                ["suspended_form", "scenarioSuspendedForm"],
+                ["appeal_open", "scenarioAppealOpen"],
+                ["appeal_reviewing", "scenarioAppealReviewing"],
+                ["appeal_overturned", "scenarioAppealOverturned"],
+                ["appeal_upheld", "scenarioAppealUpheld"],
+              ] as const
+            ).map(([key, labelKey]) => (
+              <Chip
+                key={key}
+                selected={safetyScenario === key}
+                onClick={() => setSafetyScenario(key)}
+              >
+                {t(`safety.${labelKey}`)}
+              </Chip>
+            ))}
+          </div>
+        </Card>
+
+        {safetyScenario === "help_ng" ? (
+          <HelpScreen
+            key="help_ng"
+            embedded
+            browserLocales={HELP_PREVIEW_LOCALE_NG}
+            stretch={(value) => stretch(value, longCopy)}
+            onBackToCloud={() => setSafetyScenario("report_form")}
+          />
+        ) : null}
+        {safetyScenario === "help_global" ? (
+          <HelpScreen
+            key="help_global"
+            embedded
+            browserLocales={HELP_PREVIEW_LOCALE_NONE}
+            stretch={(value) => stretch(value, longCopy)}
+            onBackToCloud={() => setSafetyScenario("help_ng")}
+          />
+        ) : null}
+        {safetyScenario === "report_form" || safetyScenario === "report_done" ? (
+          <ReportScreen
+            key={safetyScenario}
+            targetUserId={SAFETY_TARGET_USER_FIXTURE.user_id}
+            targetDisplayName={SAFETY_TARGET_USER_FIXTURE.display_name}
+            targetAvatarId={SAFETY_TARGET_USER_FIXTURE.avatar_id}
+            initialReason="harassment"
+            initialSubmitted={safetyScenario === "report_done"}
+            onCancel={() => setSafetyScenario("help_ng")}
+            onBackToCloud={() => setSafetyScenario("help_ng")}
+            stretch={(value) => stretch(value, longCopy)}
+          />
+        ) : null}
+        {safetyScenario === "block_confirm" || safetyScenario === "block_done" ? (
+          <BlockConfirmView
+            key={safetyScenario}
+            targetUserId={SAFETY_TARGET_USER_FIXTURE.user_id}
+            targetDisplayName={SAFETY_TARGET_USER_FIXTURE.display_name}
+            targetAvatarId={SAFETY_TARGET_USER_FIXTURE.avatar_id}
+            initialBlocked={safetyScenario === "block_done"}
+            onCancel={() => setSafetyScenario("help_ng")}
+            onBackToCloud={() => setSafetyScenario("help_ng")}
+            stretch={(value) => stretch(value, longCopy)}
+          />
+        ) : null}
+        {safetyScenario === "suspended_form" ? (
+          <SuspensionScreen
+            key="suspended_form"
+            embedded
+            standing={STANDING_SUSPENDED_CAN_APPEAL_FIXTURE}
+            stretch={(value) => stretch(value, longCopy)}
+          />
+        ) : null}
+        {safetyScenario === "appeal_open" ? (
+          <SuspensionScreen
+            key="appeal_open"
+            embedded
+            standing={STANDING_APPEAL_OPEN_FIXTURE}
+            stretch={(value) => stretch(value, longCopy)}
+          />
+        ) : null}
+        {safetyScenario === "appeal_reviewing" ? (
+          <SuspensionScreen
+            key="appeal_reviewing"
+            embedded
+            standing={STANDING_APPEAL_REVIEWING_FIXTURE}
+            stretch={(value) => stretch(value, longCopy)}
+          />
+        ) : null}
+        {safetyScenario === "appeal_overturned" ? (
+          <SuspensionScreen
+            key="appeal_overturned"
+            embedded
+            standing={STANDING_APPEAL_OVERTURNED_FIXTURE}
+            onEnterCloud={() => setSafetyScenario("help_ng")}
+            stretch={(value) => stretch(value, longCopy)}
+          />
+        ) : null}
+        {safetyScenario === "appeal_upheld" ? (
+          <SuspensionScreen
+            key="appeal_upheld"
+            embedded
+            standing={STANDING_APPEAL_UPHELD_FIXTURE}
+            stretch={(value) => stretch(value, longCopy)}
+          />
+        ) : null}
       </section>
 
       {/* Ambient Time-of-Day Palettes */}
