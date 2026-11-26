@@ -80,6 +80,14 @@
       "already_active": "You are already in a call or Circle.",
       "unavailable": "Not available right now. Try someone else in the cloud?",
       "request_closed": "That call invitation is no longer active."
+    },
+    "account": {
+      "suspended": "Your account is currently suspended. You can review your standing and submit an appeal."
+    },
+    "appeal": {
+      "already_exists": "An appeal has already been submitted for this action.",
+      "closed": "This appeal has already been decided.",
+      "same_moderator": "Another moderator must review this appeal."
     }
   },
   "common": {
@@ -364,6 +372,22 @@
       "scenarioMicDenied": "Microphone denied (per-browser recovery)",
       "scenarioMicTest": "Optional 20s mic & speaker test",
       "scenarioReady": "Ready (Open to talk off by default)"
+    },
+    "safety": {
+      "heading": "Report, block, help and suspension screens",
+      "description": "Two-tap report flow (API #28), gentle one-tap block confirmation (API #27), the \"I need help\" screen with Find A Helpline behind a swappable provider and browser-locale country pre-fill (OPEN-25), and suspended account standing with in-app appeals (API #44).",
+      "scenarioLabel": "Safety state",
+      "scenarioHelpNg": "I need help (locale pre-filled: Nigeria)",
+      "scenarioHelpGlobal": "I need help (no locale region)",
+      "scenarioReportForm": "Report screen (two taps + optional note)",
+      "scenarioReportDone": "Report submitted confirmation",
+      "scenarioBlockConfirm": "Block confirmation",
+      "scenarioBlockDone": "Person removed after block",
+      "scenarioSuspendedForm": "Suspended account + Appeal form",
+      "scenarioAppealOpen": "Appeal status: open",
+      "scenarioAppealReviewing": "Appeal status: reviewing",
+      "scenarioAppealOverturned": "Appeal status: overturned (restored)",
+      "scenarioAppealUpheld": "Appeal status: upheld (banned)"
     }
   },
   "cloud": {
@@ -686,6 +710,112 @@
       "openOffHeading": "Open to talk starts Off by default",
       "openOffBody": "When you enter the cloud, you can browse calmly first. Switch Open to talk On only when you want to call someone or receive invitations.",
       "enterCloudButton": "Enter the cloud"
+    }
+  },
+  "help": {
+    "title": "Support right now",
+    "companionNotice": "{appName} is a place for companionship and conversation, not a crisis or medical service.",
+    "emergencyTitle": "In immediate danger?",
+    "emergencyFallback": "If you are in immediate danger, contact your local emergency services.",
+    "countryLabel": "Your country",
+    "countryHint": "Pre-filled from your browser language setting when available, never from your IP address. Choose or change it below.",
+    "countrySelectPlaceholder": "Choose your country",
+    "directoryHeading": "Free, confidential helplines near you",
+    "directoryCountryBody": "Find A Helpline lists verified phone, text and chat support services for {country}.",
+    "directoryGlobalBody": "Find A Helpline lists verified phone, text and chat support services across countries worldwide.",
+    "directoryOpenCountryButton": "Open Find A Helpline for {country}",
+    "directoryOpenGlobalButton": "Open Find A Helpline directory",
+    "directoryExternalNote": "Opens Find A Helpline in a new tab. No hotline numbers are stored inside this app so listings stay accurate.",
+    "backToCloud": "Back to the cloud",
+    "countries": {
+      "NG": "Nigeria",
+      "GH": "Ghana",
+      "KE": "Kenya",
+      "ZA": "South Africa",
+      "GB": "United Kingdom",
+      "US": "United States",
+      "CA": "Canada",
+      "FR": "France",
+      "DE": "Germany",
+      "IN": "India",
+      "AU": "Australia"
+    }
+  },
+  "safety": {
+    "backToCloud": "Back to the cloud",
+    "report": {
+      "title": "Report {name}",
+      "subtitle": "Pick a reason and submit in two taps. Reporting also blocks them for you right away.",
+      "reasonLabel": "What happened?",
+      "reasons": {
+        "harassment": "Harassment",
+        "sexual_content": "Sexual content",
+        "hate": "Hate speech",
+        "scam": "Scam or solicitation",
+        "underage": "Possibly under 18",
+        "self_harm_concern": "Self-harm concern",
+        "other": "Other"
+      },
+      "priorityTitle": "Priority safety review",
+      "priorityBody": "Reports of possible minors or self-harm concerns are prioritized for faster human moderation review.",
+      "noteLabel": "Optional note",
+      "notePlaceholder": "Add any short detail that could help a moderator review this report",
+      "noteHint": "Optional. Reviewed privately by a human moderator.",
+      "noteTooLong": "Please keep your note under {max} characters.",
+      "submitButton": "Submit report",
+      "submittedTitle": "Report received",
+      "submittedBody": "Thank you for letting us know. {name} has been blocked for you immediately and a human moderator will review your report."
+    },
+    "block": {
+      "title": "Block {name}?",
+      "subtitle": "A quick confirmation before they disappear from your cloud.",
+      "effectPermanent": "Blocking is mutual and permanent.",
+      "effectDisappear": "You will disappear from each other's cloud, quick match and Recents, and any live call ends immediately.",
+      "effectSilent": "{name} will not be notified that you blocked them.",
+      "confirmButton": "Block {name}",
+      "doneTitle": "{name} has been removed",
+      "doneBody": "You will no longer see each other in the cloud or Recents."
+    },
+    "suspension": {
+      "unavailableTitle": "Account standing",
+      "unavailableBody": "Sign in to view your account standing or check on an appeal.",
+      "signInButton": "Go to sign in",
+      "suspendedTitle": "Your account is temporarily suspended",
+      "suspendedBody": "You cannot open to talk, call or join Circles while this suspension is active. You can read the reason below and submit an appeal inside the app.",
+      "bannedTitle": "Your account has been permanently banned",
+      "bannedBody": "This account can no longer access calls or Circles following a moderation decision.",
+      "restoredTitle": "Your account access has been restored",
+      "restoredBody": "Your appeal was overturned after review. Welcome back to the cloud.",
+      "reasonHeading": "Moderation reason",
+      "endsAtLabel": "Scheduled to end on {date}",
+      "appealErrorTitle": "Could not submit appeal",
+      "appealFormHeading": "Appeal this decision",
+      "appealFormSubtitle": "If you think this action was a mistake, share your side plainly. Appeals are reviewed by a human moderator, and by a different moderator whenever possible.",
+      "appealMessageLabel": "Your appeal message",
+      "appealMessagePlaceholder": "Explain clearly what happened or why you believe this decision should be reviewed",
+      "appealReviewNote": "One appeal per action. Reviewed by a human moderator.",
+      "appealValidationError": "Please write between {min} and {max} characters for your appeal.",
+      "submitAppealButton": "Submit appeal",
+      "appealStatusHeading": "Appeal status",
+      "appealStates": {
+        "open": {
+          "label": "Received",
+          "body": "Your appeal is in the queue for human review. Check back here for an update."
+        },
+        "reviewing": {
+          "label": "Under review",
+          "body": "A moderator is actively reviewing your appeal and the call metadata."
+        },
+        "overturned": {
+          "label": "Overturned",
+          "body": "After review, this decision was overturned and your account is active again."
+        },
+        "upheld": {
+          "label": "Upheld",
+          "body": "After review, the moderation decision remains in place."
+        }
+      },
+      "signOutButton": "Sign out"
     }
   }
 }
