@@ -11,11 +11,12 @@ import {
   Card,
   Chip,
   Dialog,
-  EmptyState,
   Select,
+  Sheet,
   Skeleton,
   StatusIcon,
 } from "@/components/ui";
+import { CloudBackdrop } from "@/features/cloud/components/cloud-backdrop";
 import { OwnOrbBar } from "@/features/cloud/components/own-orb-bar";
 import { ProfileCardSheet } from "@/features/cloud/components/profile-card-sheet";
 import { SkyOrb } from "@/features/cloud/components/sky-orb";
@@ -155,6 +156,7 @@ export function CloudScreen({
   const [ownStatus, setOwnStatus] =
     React.useState<PresenceStatus>(initialStatus);
   const [filters, setFilters] = React.useState<CloudFilters>(initialFilters);
+  const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [selectedUserId, setSelectedUserId] = React.useState<string | null>(
     initialSelectedUserId,
   );
@@ -224,11 +226,11 @@ export function CloudScreen({
 
   const callGate = canCallFromCloud(presenceState);
 
-  const hasActiveFilters =
-    filters.language !== null ||
-    filters.country !== null ||
-    filters.intent !== null ||
-    filters.interests.length > 0;
+  const activeFilterCount =
+    (filters.language ? 1 : 0) +
+    (filters.country ? 1 : 0) +
+    (filters.intent ? 1 : 0) +
+    filters.interests.length;
 
   const toggleInterestFilter = (interest: CuratedInterestId) => {
     setPageIndex(0);
@@ -314,398 +316,448 @@ export function CloudScreen({
         : tCloud("populationMany", { count: trueOpenCount });
 
   return (
-    <AppShell inlinePreview={embedded} surface="cloud" activeTab="cloud">
-      <div className="flex w-full flex-col gap-5">
-        {/* Top bar: true population count, Find someone (Quick Match), and Sky/List toggle */}
-        <Card className="flex flex-col gap-4">
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-            <div className="flex flex-col gap-1">
-              <div className="inline-flex items-center gap-2">
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "h-2.5 w-2.5 rounded-full",
-                    trueOpenCount > 0 ? "bg-good" : "bg-ink-muted",
-                  )}
-                />
-                <p
-                  role="status"
-                  aria-live="polite"
-                  className="text-base font-semibold text-ink sm:text-lg break-words"
-                >
-                  {stretch(populationLine)}
-                </p>
-              </div>
-              <p className="text-xs text-ink-secondary break-words">
-                {stretch(
-                  presenceState === "open"
-                    ? tCloud("browsingWhileOpen")
-                    : tCloud("browsingWhileClosed"),
-                )}
-              </p>
-            </div>
-
-            {/* View mode toggle: Sky view vs List view (Spec 9.3) */}
-            <div
-              role="group"
-              aria-label={tCloud("viewToggleLabel")}
-              className="inline-flex items-center gap-1.5 self-start sm:self-auto"
-            >
-              <Chip
-                selected={viewMode === "sky"}
-                onClick={() => setViewMode("sky")}
-              >
-                {stretch(tCloud("skyViewTab"))}
-              </Chip>
-              <Chip
-                selected={viewMode === "list"}
-                onClick={() => setViewMode("list")}
-              >
-                {stretch(tCloud("listViewTab"))}
-              </Chip>
-            </div>
-          </div>
-
-          {/* One big "Find someone" quick-match button (Spec 7.3, 9.3, API #24) */}
-          <div className="flex flex-col gap-2 border-t border-line pt-3.5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-ink break-words">
-                {stretch(tCloud("quickMatchHeading"))}
-              </p>
-              <p className="text-xs text-ink-secondary break-words">
-                {stretch(
-                  callGate.allowed
-                    ? tCloud("quickMatchHint")
-                    : tCloud("callDisabledClosed"),
-                )}
-              </p>
-            </div>
-            <Button
-              variant="primary"
-              disabled={!callGate.allowed || trueOpenCount === 0}
-              onClick={handleQuickMatch}
-              className="sm:min-w-[11rem]"
-            >
-              {stretch(tCloud("findSomeoneButton"))}
-            </Button>
-          </div>
-        </Card>
-
-        {/* Quick match & error banners */}
-        {quickMatchBanner === "no_one_available" ? (
-          <Banner
-            tone="info"
-            title={stretch(tCloud("quickMatchEmptyTitle"))}
-            description={stretch(tCloud("quickMatchEmptyBody"))}
-            action={
-              <Button
-                variant="secondary"
-                onClick={() => setQuickMatchBanner("none")}
-              >
-                {tCommon("close")}
-              </Button>
-            }
-          />
-        ) : null}
-
-        {dataState === "error" ? (
-          <Banner
-            tone="danger"
-            title={stretch(tCloud("errorTitle"))}
-            description={stretch(tCloud("errorBody"))}
-            action={
-              <Button variant="secondary">{tCommon("retry")}</Button>
-            }
-          />
-        ) : null}
-
-        {/* Filters bar: language, country, intent, interests (FR-CLOUD-4) */}
-        <Card className="flex flex-col gap-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-sm font-semibold text-ink">
-              {stretch(tCloud("filters.heading"))}
-            </h2>
-            {hasActiveFilters ? (
-              <Button variant="quiet" onClick={resetFilters}>
-                {stretch(tCloud("filters.clearAll"))}
-              </Button>
-            ) : null}
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-3">
-            <Select
-              label={stretch(tCloud("filters.languageLabel"))}
-              options={languageFilterOptions}
-              value={filters.language ?? ""}
-              onChange={(e) => {
-                setPageIndex(0);
-                setFilters((prev) => ({
-                  ...prev,
-                  language: e.target.value || null,
-                }));
-              }}
-            />
-            <Select
-              label={stretch(tCloud("filters.countryLabel"))}
-              options={countryFilterOptions}
-              value={filters.country ?? ""}
-              onChange={(e) => {
-                setPageIndex(0);
-                setFilters((prev) => ({
-                  ...prev,
-                  country: e.target.value || null,
-                }));
-              }}
-            />
-            <Select
-              label={stretch(tCloud("filters.intentLabel"))}
-              options={intentFilterOptions}
-              value={filters.intent ?? ""}
-              onChange={(e) => {
-                setPageIndex(0);
-                setFilters((prev) => ({
-                  ...prev,
-                  intent: (e.target.value || null) as UserIntent | null,
-                }));
-              }}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-medium text-ink-secondary">
-              {stretch(tCloud("filters.interestsLabel"))}
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {CURATED_INTEREST_IDS.map((interestId) => (
-                <Chip
-                  key={interestId}
-                  selected={filters.interests.includes(interestId)}
-                  onClick={() => toggleInterestFilter(interestId)}
-                >
-                  {stretch(tInterests(interestId))}
-                </Chip>
-              ))}
-            </div>
-          </div>
-        </Card>
-
-        {/* Main Cloud Content: Loading, Empty, Filtered Empty, Sky View, or List View */}
-        {dataState === "loading" ? (
-          <Card className="flex flex-col gap-3 py-6">
-            <Skeleton label={tCloud("loadingSkyLabel")} className="h-14 w-full" />
-            <Skeleton label={tCloud("loadingSkyLabel")} className="h-14 w-5/6" />
-            <Skeleton label={tCloud("loadingSkyLabel")} className="h-14 w-4/6" />
-          </Card>
-        ) : trueOpenCount === 0 ? (
-          <EmptyState
-            title={stretch(tCloud("emptyTitle"))}
-            body={stretch(tCloud("emptyBody"))}
-            action={
-              presenceState !== "open" ? (
-                <Button
-                  variant="primary"
-                  onClick={() => setPresenceState("open")}
-                >
-                  {stretch(tCloud("turnOnOpenToTalk"))}
-                </Button>
-              ) : undefined
-            }
-          />
-        ) : filteredEntries.length === 0 ? (
-          <EmptyState
-            title={stretch(tCloud("filteredEmptyTitle"))}
-            body={stretch(tCloud("filteredEmptyBody"))}
-            action={
-              <Button variant="secondary" onClick={resetFilters}>
-                {stretch(tCloud("filters.clearAll"))}
-              </Button>
-            }
-          />
-        ) : viewMode === "sky" ? (
-          /* Living Sky View (Spec 9.2) */
-          <section
-            aria-label={tCloud("skyRegionLabel")}
-            className="relative min-h-[29rem] w-full overflow-hidden rounded-[var(--radius-card)] border border-line bg-gradient-to-b from-sky-top to-sky-bottom p-4 shadow-[var(--shadow-card)] sm:min-h-[33rem]"
-          >
-            {/* Ambient decorative glow */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 overflow-hidden"
-            >
-              <div className="absolute top-8 left-1/4 h-48 w-48 rounded-full bg-sky-glow/15 blur-3xl" />
-              <div className="absolute right-1/4 bottom-20 h-56 w-56 rounded-full bg-accent/10 blur-3xl" />
-            </div>
-
-            {orbPlacements.map((placement) => {
-              const statusText = formatEntryStatus(placement.entry);
-              const langsText = formatEntryLanguages(placement.entry);
-              return (
-                <SkyOrb
-                  key={placement.entry.user_id}
-                  placement={placement}
-                  statusLabel={stretch(statusText)}
-                  languagesLabel={langsText}
-                  ariaLabel={tCloud("orbAriaLabel", {
-                    name: placement.entry.display_name,
-                    status: statusText,
-                    languages: langsText,
-                  })}
-                  selected={selectedUserId === placement.entry.user_id}
-                  onSelect={(id) => setSelectedUserId(id)}
-                />
-              );
-            })}
-          </section>
-        ) : (
-          /* Accessible List View (Spec 9.3, FR-CLOUD-6) */
-          <section aria-label={tCloud("listRegionLabel")} className="flex flex-col gap-3">
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {pageEntries.map((entry) => {
-                const presetKey = entry.status?.preset ?? "custom";
-                const statusMeta = getStatusMeta(presetKey);
-                const statusText = formatEntryStatus(entry);
-                const isSelected = selectedUserId === entry.user_id;
-
-                return (
-                  <li key={entry.user_id}>
-                    <Card
-                      className={cn(
-                        "flex h-full flex-col justify-between gap-4 transition-colors duration-[var(--duration-fast)]",
-                        isSelected && "ring-2 ring-accent",
-                      )}
-                    >
-                      <div className="flex items-start gap-3.5">
-                        <Avatar
-                          presetId={entry.avatar_id}
-                          allowPhoto={false}
-                          size="lg"
-                          statusPreset={presetKey}
-                          label={entry.display_name}
-                        />
-                        <div className="min-w-0 flex-1 flex flex-col gap-1.5">
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <h3 className="text-base font-semibold text-ink break-words">
-                              {entry.display_name}
-                            </h3>
-                            {entry.country ? (
-                              <span className="rounded-[var(--radius-sm)] bg-surface-sunken px-2 py-0.5 text-xs font-medium text-ink-secondary">
-                                {tCloud.has(`countries.${entry.country}`)
-                                  ? tCloud(`countries.${entry.country}`)
-                                  : entry.country}
-                              </span>
-                            ) : null}
-                          </div>
-
-                          <div
-                            className={cn(
-                              "inline-flex w-fit items-center gap-1.5 rounded-[var(--radius-pill)] border px-2.5 py-0.5 text-xs font-semibold",
-                              statusMeta.bgClass,
-                              statusMeta.borderClass,
-                              statusMeta.textClass,
-                            )}
-                          >
-                            <StatusIcon icon={statusMeta.icon} className="h-3.5 w-3.5" />
-                            <span className="break-words">{stretch(statusText)}</span>
-                          </div>
-
-                          <p className="text-xs font-medium text-ink-secondary break-words">
-                            {formatEntryLanguages(entry)}
-                            {entry.intent ? ` · ${tIntents(entry.intent)}` : ""}
-                          </p>
-
-                          {entry.interests.length > 0 ? (
-                            <div className="mt-1 flex flex-wrap gap-1.5">
-                              {entry.interests.map((id) => (
-                                <span
-                                  key={id}
-                                  className="rounded-[var(--radius-sm)] border border-line bg-surface-sunken px-2 py-0.5 text-xs text-ink-secondary"
-                                >
-                                  {stretch(tInterests(id))}
-                                </span>
-                              ))}
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center justify-end gap-2 border-t border-line pt-3">
-                        <Button
-                          variant="secondary"
-                          onClick={() => setSelectedUserId(entry.user_id)}
-                        >
-                          {stretch(
-                            tCloud("viewProfileButton", {
-                              name: entry.display_name,
-                            }),
-                          )}
-                        </Button>
-                        <Button
-                          variant="primary"
-                          disabled={!callGate.allowed}
-                          onClick={() => setSelectedUserId(entry.user_id)}
-                        >
-                          {stretch(
-                            tCloud("profileCard.callButton", {
-                              name: entry.display_name,
-                            }),
-                          )}
-                        </Button>
-                      </div>
-                    </Card>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
+    <AppShell
+      inlinePreview={embedded}
+      fullBleed
+      surface="cloud"
+      activeTab="cloud"
+    >
+      <div
+        className={cn(
+          "relative flex w-full flex-1 flex-col overflow-hidden",
+          embedded ? "min-h-[36rem]" : "min-h-[calc(100dvh-4rem)]",
         )}
+      >
+        {/* Full-bleed living cloud & sky backdrop (Spec 9.2) */}
+        <CloudBackdrop />
 
-        {/* Pagination bar when open users exceed single-page cap (e.g. 200 open people) */}
-        {filteredEntries.length > pageSize ? (
-          <Card className="flex flex-wrap items-center justify-between gap-3 py-3">
-            <span className="text-xs font-medium text-ink-secondary">
-              {tCloud("paginationRange", {
-                start: safePageIndex * pageSize + 1,
-                end: Math.min(
-                  (safePageIndex + 1) * pageSize,
-                  filteredEntries.length,
-                ),
-                total: filteredEntries.length,
-              })}
-            </span>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                disabled={safePageIndex === 0}
-                onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
+        {/* Floating airy sky layer: minimal top bar, open cloud space, bottom-centre Open to talk card */}
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-between gap-4 px-4 py-4 sm:px-6 sm:py-5">
+          {/* Top floating controls: calm population pill + subtle Find someone, Filter sheet trigger, Sky/List toggle */}
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
+            <div className="inline-flex items-center gap-2 rounded-[var(--radius-pill)] border border-line/70 bg-surface/75 px-3.5 py-2 shadow-[var(--shadow-card)] backdrop-blur-md">
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "h-2.5 w-2.5 shrink-0 rounded-full",
+                  trueOpenCount > 0 ? "bg-good" : "bg-ink-muted",
+                )}
+              />
+              <p
+                role="status"
+                aria-live="polite"
+                className="text-sm font-semibold text-ink break-words"
               >
-                {tCloud("paginationPrev")}
+                {stretch(populationLine)}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="primary"
+                disabled={!callGate.allowed || trueOpenCount === 0}
+                onClick={handleQuickMatch}
+                className="rounded-[var(--radius-pill)] shadow-[var(--shadow-card)]"
+              >
+                {stretch(tCloud("findSomeoneButton"))}
               </Button>
+
+              {/* Filters live in a calm Sheet instead of cluttering the cloud sky (FR-CLOUD-4) */}
               <Button
-                variant="secondary"
-                disabled={safePageIndex >= totalPages - 1}
-                onClick={() =>
-                  setPageIndex((p) => Math.min(totalPages - 1, p + 1))
-                }
+                variant={activeFilterCount > 0 ? "primary" : "secondary"}
+                aria-haspopup="dialog"
+                aria-expanded={filtersOpen}
+                onClick={() => setFiltersOpen(true)}
+                className="rounded-[var(--radius-pill)] bg-surface/80 backdrop-blur-md"
               >
-                {tCloud("paginationNext")}
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  className="h-4 w-4 shrink-0"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.5 5h13M6 10h8M8.5 15h3"
+                  />
+                </svg>
+                <span>
+                  {stretch(
+                    activeFilterCount > 0
+                      ? tCloud("filters.openButtonWithCount", {
+                          count: activeFilterCount,
+                        })
+                      : tCloud("filters.openButton"),
+                  )}
+                </span>
+              </Button>
+
+              <div
+                role="group"
+                aria-label={tCloud("viewToggleLabel")}
+                className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-line/70 bg-surface/75 p-1 backdrop-blur-md"
+              >
+                <Chip
+                  selected={viewMode === "sky"}
+                  onClick={() => setViewMode("sky")}
+                >
+                  {stretch(tCloud("skyViewTab"))}
+                </Chip>
+                <Chip
+                  selected={viewMode === "list"}
+                  onClick={() => setViewMode("list")}
+                >
+                  {stretch(tCloud("listViewTab"))}
+                </Chip>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick match & error banners */}
+          {quickMatchBanner === "no_one_available" ? (
+            <div className="mx-auto w-full max-w-xl">
+              <Banner
+                tone="info"
+                title={stretch(tCloud("quickMatchEmptyTitle"))}
+                description={stretch(tCloud("quickMatchEmptyBody"))}
+                action={
+                  <Button
+                    variant="secondary"
+                    onClick={() => setQuickMatchBanner("none")}
+                  >
+                    {tCommon("close")}
+                  </Button>
+                }
+              />
+            </div>
+          ) : null}
+
+          {dataState === "error" ? (
+            <div className="mx-auto w-full max-w-xl">
+              <Banner
+                tone="danger"
+                title={stretch(tCloud("errorTitle"))}
+                description={stretch(tCloud("errorBody"))}
+                action={
+                  <Button variant="secondary">{tCommon("retry")}</Button>
+                }
+              />
+            </div>
+          ) : null}
+
+          {/* Living open cloud space (center viewport) */}
+          <div className="relative flex flex-1 flex-col justify-center">
+            {dataState === "loading" ? (
+              <div className="mx-auto flex w-full max-w-md flex-col gap-3 rounded-[var(--radius-card)] bg-surface/70 p-6 backdrop-blur-md">
+                <Skeleton label={tCloud("loadingSkyLabel")} className="h-12 w-full" />
+                <Skeleton label={tCloud("loadingSkyLabel")} className="h-12 w-5/6" />
+                <Skeleton label={tCloud("loadingSkyLabel")} className="h-12 w-4/6" />
+              </div>
+            ) : trueOpenCount === 0 ? (
+              /* Whisper-light empty cloud floating directly in the open sky (Spec 9.7) */
+              <div className="mx-auto flex max-w-md flex-col items-center gap-3 px-4 py-10 text-center">
+                <p className="text-xl font-semibold text-ink sm:text-2xl break-words">
+                  {stretch(tCloud("emptyTitle"))}
+                </p>
+                <p className="text-sm leading-relaxed text-ink-secondary break-words">
+                  {stretch(tCloud("emptyBody"))}
+                </p>
+                {presenceState !== "open" ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => setPresenceState("open")}
+                    className="mt-2 rounded-[var(--radius-pill)]"
+                  >
+                    {stretch(tCloud("turnOnOpenToTalk"))}
+                  </Button>
+                ) : null}
+              </div>
+            ) : filteredEntries.length === 0 ? (
+              <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-[var(--radius-card)] border border-line/70 bg-surface/75 px-6 py-8 text-center backdrop-blur-md">
+                <p className="text-lg font-semibold text-ink break-words">
+                  {stretch(tCloud("filteredEmptyTitle"))}
+                </p>
+                <p className="text-sm text-ink-secondary break-words">
+                  {stretch(tCloud("filteredEmptyBody"))}
+                </p>
+                <Button variant="secondary" onClick={resetFilters}>
+                  {stretch(tCloud("filters.clearAll"))}
+                </Button>
+              </div>
+            ) : viewMode === "sky" ? (
+              /* Living Sky View: open people floating freely across the full cloud canvas (Spec 9.2) */
+              <section
+                aria-label={tCloud("skyRegionLabel")}
+                className="relative min-h-[26rem] w-full flex-1 sm:min-h-[30rem]"
+              >
+                {orbPlacements.map((placement) => {
+                  const statusText = formatEntryStatus(placement.entry);
+                  const langsText = formatEntryLanguages(placement.entry);
+                  return (
+                    <SkyOrb
+                      key={placement.entry.user_id}
+                      placement={placement}
+                      statusLabel={stretch(statusText)}
+                      languagesLabel={langsText}
+                      ariaLabel={tCloud("orbAriaLabel", {
+                        name: placement.entry.display_name,
+                        status: statusText,
+                        languages: langsText,
+                      })}
+                      selected={selectedUserId === placement.entry.user_id}
+                      onSelect={(id) => setSelectedUserId(id)}
+                    />
+                  );
+                })}
+              </section>
+            ) : (
+              /* Accessible List View floating cleanly over the cloud sky (Spec 9.3, FR-CLOUD-6) */
+              <section
+                aria-label={tCloud("listRegionLabel")}
+                className="flex flex-col gap-3 py-2"
+              >
+                <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {pageEntries.map((entry) => {
+                    const presetKey = entry.status?.preset ?? "custom";
+                    const statusMeta = getStatusMeta(presetKey);
+                    const statusText = formatEntryStatus(entry);
+                    const isSelected = selectedUserId === entry.user_id;
+
+                    return (
+                      <li key={entry.user_id}>
+                        <Card
+                          className={cn(
+                            "flex h-full flex-col justify-between gap-4 bg-surface/85 backdrop-blur-md transition-colors duration-[var(--duration-fast)]",
+                            isSelected && "ring-2 ring-accent",
+                          )}
+                        >
+                          <div className="flex items-start gap-3.5">
+                            <Avatar
+                              presetId={entry.avatar_id}
+                              allowPhoto={false}
+                              size="lg"
+                              statusPreset={presetKey}
+                              label={entry.display_name}
+                            />
+                            <div className="min-w-0 flex-1 flex flex-col gap-1.5">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <h3 className="text-base font-semibold text-ink break-words">
+                                  {entry.display_name}
+                                </h3>
+                                {entry.country ? (
+                                  <span className="rounded-[var(--radius-sm)] bg-surface-sunken px-2 py-0.5 text-xs font-medium text-ink-secondary">
+                                    {tCloud.has(`countries.${entry.country}`)
+                                      ? tCloud(`countries.${entry.country}`)
+                                      : entry.country}
+                                  </span>
+                                ) : null}
+                              </div>
+
+                              <div
+                                className={cn(
+                                  "inline-flex w-fit items-center gap-1.5 rounded-[var(--radius-pill)] border px-2.5 py-0.5 text-xs font-semibold",
+                                  statusMeta.bgClass,
+                                  statusMeta.borderClass,
+                                  statusMeta.textClass,
+                                )}
+                              >
+                                <StatusIcon
+                                  icon={statusMeta.icon}
+                                  className="h-3.5 w-3.5"
+                                />
+                                <span className="break-words">
+                                  {stretch(statusText)}
+                                </span>
+                              </div>
+
+                              <p className="text-xs font-medium text-ink-secondary break-words">
+                                {formatEntryLanguages(entry)}
+                                {entry.intent
+                                  ? ` · ${tIntents(entry.intent)}`
+                                  : ""}
+                              </p>
+
+                              {entry.interests.length > 0 ? (
+                                <div className="mt-1 flex flex-wrap gap-1.5">
+                                  {entry.interests.map((id) => (
+                                    <span
+                                      key={id}
+                                      className="rounded-[var(--radius-sm)] border border-line bg-surface-sunken px-2 py-0.5 text-xs text-ink-secondary"
+                                    >
+                                      {stretch(tInterests(id))}
+                                    </span>
+                                  ))}
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-line pt-3">
+                            <Button
+                              variant="secondary"
+                              onClick={() => setSelectedUserId(entry.user_id)}
+                            >
+                              {stretch(
+                                tCloud("viewProfileButton", {
+                                  name: entry.display_name,
+                                }),
+                              )}
+                            </Button>
+                            <Button
+                              variant="primary"
+                              disabled={!callGate.allowed}
+                              onClick={() => setSelectedUserId(entry.user_id)}
+                            >
+                              {stretch(
+                                tCloud("profileCard.callButton", {
+                                  name: entry.display_name,
+                                }),
+                              )}
+                            </Button>
+                          </div>
+                        </Card>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            )}
+          </div>
+
+          {/* Pagination bar only when open users exceed a single sky/list page */}
+          {filteredEntries.length > pageSize ? (
+            <div className="mx-auto flex w-full max-w-xl flex-wrap items-center justify-between gap-3 rounded-[var(--radius-pill)] border border-line/70 bg-surface/80 px-4 py-2 backdrop-blur-md">
+              <span className="text-xs font-medium text-ink-secondary">
+                {tCloud("paginationRange", {
+                  start: safePageIndex * pageSize + 1,
+                  end: Math.min(
+                    (safePageIndex + 1) * pageSize,
+                    filteredEntries.length,
+                  ),
+                  total: filteredEntries.length,
+                })}
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  disabled={safePageIndex === 0}
+                  onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
+                >
+                  {tCloud("paginationPrev")}
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={safePageIndex >= totalPages - 1}
+                  onClick={() =>
+                    setPageIndex((p) => Math.min(totalPages - 1, p + 1))
+                  }
+                >
+                  {tCloud("paginationNext")}
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
+          {/* Hero focal point: user's own orb & Open to talk card anchored at the bottom centre of the clouds */}
+          <OwnOrbBar
+            viewerName={
+              viewer.display_name ?? tCloud("ownOrb.defaultViewerName")
+            }
+            viewerAvatarId={viewer.avatar_id}
+            isOpen={presenceState === "open"}
+            status={ownStatus}
+            onToggleOpen={(next) => setPresenceState(next ? "open" : "closed")}
+            onChangeStatus={setOwnStatus}
+            statusPickerOpen={statusPickerOpen}
+            onStatusPickerOpenChange={setStatusPickerOpen}
+            inlineSheet={embedded}
+            stretch={stretch}
+          />
+        </div>
+
+        {/* Filters Sheet opened on demand so the cloud sky stays uncluttered (FR-CLOUD-4) */}
+        <Sheet
+          open={filtersOpen}
+          inline={embedded}
+          onClose={() => setFiltersOpen(false)}
+          title={stretch(tCloud("filters.heading"))}
+          description={stretch(tCloud("filters.sheetDescription"))}
+          closeLabel={tCommon("close")}
+        >
+          <div className="flex flex-col gap-4">
+            <div className="grid gap-3 sm:grid-cols-3">
+              <Select
+                label={stretch(tCloud("filters.languageLabel"))}
+                options={languageFilterOptions}
+                value={filters.language ?? ""}
+                onChange={(e) => {
+                  setPageIndex(0);
+                  setFilters((prev) => ({
+                    ...prev,
+                    language: e.target.value || null,
+                  }));
+                }}
+              />
+              <Select
+                label={stretch(tCloud("filters.countryLabel"))}
+                options={countryFilterOptions}
+                value={filters.country ?? ""}
+                onChange={(e) => {
+                  setPageIndex(0);
+                  setFilters((prev) => ({
+                    ...prev,
+                    country: e.target.value || null,
+                  }));
+                }}
+              />
+              <Select
+                label={stretch(tCloud("filters.intentLabel"))}
+                options={intentFilterOptions}
+                value={filters.intent ?? ""}
+                onChange={(e) => {
+                  setPageIndex(0);
+                  setFilters((prev) => ({
+                    ...prev,
+                    intent: (e.target.value || null) as UserIntent | null,
+                  }));
+                }}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-medium text-ink-secondary">
+                {stretch(tCloud("filters.interestsLabel"))}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {CURATED_INTEREST_IDS.map((interestId) => (
+                  <Chip
+                    key={interestId}
+                    selected={filters.interests.includes(interestId)}
+                    onClick={() => toggleInterestFilter(interestId)}
+                  >
+                    {stretch(tInterests(interestId))}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-4">
+              {activeFilterCount > 0 ? (
+                <Button variant="quiet" onClick={resetFilters}>
+                  {stretch(tCloud("filters.clearAll"))}
+                </Button>
+              ) : (
+                <span />
+              )}
+              <Button variant="primary" onClick={() => setFiltersOpen(false)}>
+                {stretch(tCloud("filters.applyButton"))}
               </Button>
             </div>
-          </Card>
-        ) : null}
-
-        {/* Own orb fixed at bottom centre with Open to talk switch (Spec 9.2) */}
-        <OwnOrbBar
-          viewerName={viewer.display_name ?? tCloud("ownOrb.defaultViewerName")}
-          viewerAvatarId={viewer.avatar_id}
-          isOpen={presenceState === "open"}
-          status={ownStatus}
-          onToggleOpen={(next) => setPresenceState(next ? "open" : "closed")}
-          onChangeStatus={setOwnStatus}
-          statusPickerOpen={statusPickerOpen}
-          onStatusPickerOpenChange={setStatusPickerOpen}
-          inlineSheet={embedded}
-          stretch={stretch}
-        />
+          </div>
+        </Sheet>
 
         {/* Selected person's Profile Card Sheet (Spec 9.2, FR-PROF-6, FR-CLOUD-7) */}
         <ProfileCardSheet

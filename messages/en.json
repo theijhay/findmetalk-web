@@ -430,6 +430,10 @@
     },
     "filters": {
       "heading": "Filter who you see",
+      "openButton": "Filter",
+      "openButtonWithCount": "Filter ({count})",
+      "sheetDescription": "Narrow the cloud by spoken language, opted-in country, intent or interests.",
+      "applyButton": "Done",
       "clearAll": "Clear filters",
       "languageLabel": "Spoken language",
       "allLanguages": "All languages",
